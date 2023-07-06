@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a8cd89daf331c6449bb4ab2eb2e6ee7, type: 3}
+  m_Name: Rino
+  m_EditorClassIdentifier: 
+  img: {fileID: 21300000, guid: 5debbc28d89b394498cef1e1629ad650, type: 3}
+  prefab: {fileID: 752902828199593315, guid: 8485870ee67852d4d8ef60b400e22922, type: 3}
+  startPos: {x: 30, y: 1, z: 30}
+  champName: Rino
+  maxHp: 1250
+  maxMp: 1000
+  moveSpeed: 300
+  atk: 55
+  atkRange: 3
+  atkSpeed: 0.625
