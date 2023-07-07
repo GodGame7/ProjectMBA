@@ -20,5 +20,5 @@ MonoBehaviour:
   maxMp: 1000
   moveSpeed: 300
   atk: 55
-  atkRange: 3
-  atkSpeed: 0.625
+  atkRange: 5
+  atkSpeed: 2.5

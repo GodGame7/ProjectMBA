@@ -13,6 +13,25 @@ public class CommandMachine : MonoBehaviour
 
     private void Update()
     {
+        if (receiver != null)
+        {
+            CommandMachineOn();
+        }
+    }
+    public void AddCommand(ICommand c)
+    {
+        commandQueue.Enqueue(c);
+    }
+    public void ClearCommand()
+    {
+        commandQueue.Clear();
+    }
+
+
+
+
+    void CommandMachineOn()
+    {
         if (receiver.canReceive())
         {
             if (commandQueue.Count > 0)
@@ -28,13 +47,4 @@ public class CommandMachine : MonoBehaviour
             }
         }
     }
-    public void AddCommand(ICommand c)
-    {
-        commandQueue.Enqueue(c);
-    }
-    public void ClearCommand()
-    {
-        commandQueue.Clear();
-    }
-
 }

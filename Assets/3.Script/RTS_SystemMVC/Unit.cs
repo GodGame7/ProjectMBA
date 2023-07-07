@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class Unit : MonoBehaviour
 {
     RTS_Cam.RTS_Camera cam;
-    int team = 0; // 0 = blue, 1 = red;
+    public int team = 0; // 0 = blue, 1 = red, 2 = neutral;
     [SerializeField] GameObject marker;
     [Header("자동세팅 컴포넌트")]
     [SerializeField] NavMeshAgent navAgent;
@@ -17,6 +17,8 @@ public class Unit : MonoBehaviour
     public Sprite img;
     public float maxHp;
     public float curHp;
+    public float maxMp;
+    public float curMp;
     public float atk;
     public float range;
     public float moveSpeed;
@@ -50,14 +52,11 @@ public class Unit : MonoBehaviour
     {
         Init_status();
         InitState();
-        InitMyUnit();//테스트용으로
     }
     #region StateMachine.Update~LateUpdate 
     private void Update()
     {
-        Debug.Log(cur_state);
-        cur_state.Update();
-        
+        cur_state.Update();        
     }
     private void FixedUpdate()
     {
@@ -97,13 +96,17 @@ public class Unit : MonoBehaviour
     {
         //todo : myUnit일 경우 카메라나 컨트롤러와 연동해야해요.
         cam.InitPlayer(this);
+        FindObjectOfType<CommandMachine>().Init(this);
     }
     public void Init_status()
     {
         img = unitData.img;
         maxHp = unitData.maxHp;
         curHp = unitData.maxHp;
+        maxMp = unitData.maxMp;
+        curMp = unitData.maxMp;
         atk = unitData.atk;
+        attackSpeed = unitData.atkSpeed;
         range = unitData.atkRange;
         moveSpeed = unitData.moveSpeed;
         level = 1;

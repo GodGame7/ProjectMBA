@@ -21,6 +21,7 @@ public class IdleState : IState
     {
         this.myUnit = myUnit;
         searchArea = new Vector3(myUnit.range, myUnit.range, myUnit.range);
+        attackState = new AttackState(myUnit);
     }
     public void Enter()
     {
@@ -53,8 +54,9 @@ public class IdleState : IState
     }
     bool Search()
     {
+        int layerMask = 1 << LayerMask.NameToLayer("Unit");
         Collider[] hitted =
-            Physics.OverlapBox(myUnit.transform.position, searchArea, Quaternion.identity, LayerMask.NameToLayer("Unit"));
+            Physics.OverlapBox(myUnit.transform.position, searchArea, Quaternion.identity, layerMask);
         if (hitted != null)
         {
             foreach (var col in hitted)
@@ -71,7 +73,6 @@ public class IdleState : IState
     }
 }
 
-
 public class AttackState : IState
 {
     Unit myUnit;
@@ -83,52 +84,61 @@ public class AttackState : IState
     float currentAttackCoolTime;
     Animator animator;
     Vector3 searchArea;
+    bool isArrive()
+    {
+        if (Vector3.Distance(myUnit.transform.position, t_pos) < 0.1f)
+        {
+            myUnit.transform.position = t_pos;
+            return true;
+        }
+        return false;
+    }
     public AttackState(Unit myUnit)
     {
         this.myUnit = myUnit;
         t_unit = null;
         this.t_pos = myUnit.transform.position;
         searchArea = new Vector3(myUnit.range, myUnit.range, myUnit.range);
+        animator = myUnit.anim;
+        SetAttackSpeed(myUnit.attackSpeed);
     }
     public void Init(Unit targetUnit)
     {
         t_unit = targetUnit;
-    }
-    public void Init(Vector3 t_pos)
+    }    public void Init(Vector3 t_pos)
     {
+        t_unit = null;
         this.t_pos = t_pos;
     }
     public void Enter()
     {
         SetAttackSpeed(myUnit.attackSpeed);
     }
-
     public void Exit()
     {
-
+        
     }
-
     public void FixedUpdate()
     {
 
     }
-
     public void LateUpdate()
     {
-        currentAttackCoolTime += Time.deltaTime;
+        
     }
-
     public void Update()
     {
         if (isTarget)
         {
             if (isInRange(t_unit))
             {
+                float rotationSpeed = 5f; // 회전 속도 조정
+                Quaternion targetRotation = Quaternion.LookRotation(t_unit.transform.position - myUnit.transform.position);
+                myUnit.transform.rotation = Quaternion.Slerp(myUnit.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime * attackSpeed);
                 myUnit.Stop();
-                //todo 사거리 안에 있을 시 공격
+                Debug.Log(attackCoolTime);
                 if (currentAttackCoolTime >= attackCoolTime)
-                {
-                    //쿨타임 초기화하고 공격을 개시한다.
+                {                    
                     currentAttackCoolTime = 0;
                     Attack();
                 }
@@ -139,7 +149,15 @@ public class AttackState : IState
         {
             myUnit.MoveTo(t_pos);
             Search();
-        }        
+            if (isArrive())
+            {
+                if (isArrive())
+                {
+                    myUnit.SetState(myUnit.state_idle);
+                }
+            }
+        }
+        currentAttackCoolTime += Time.deltaTime;
     }
     bool isInRange(Unit target)
     {
@@ -162,8 +180,9 @@ public class AttackState : IState
     }    
     bool Search()
     {
+        int layerMask = 1 << LayerMask.NameToLayer("Unit");
         Collider[] hitted =
-            Physics.OverlapBox(myUnit.transform.position, searchArea, Quaternion.identity, LayerMask.NameToLayer("Unit"));
+            Physics.OverlapBox(myUnit.transform.position, searchArea, Quaternion.identity, layerMask);
         if (hitted != null)
         {
             foreach (var col in hitted)
@@ -183,7 +202,15 @@ public class MoveState : IState
 {
     Unit myUnit;
     Vector3 t_pos;
-
+    bool isArrive()
+    {
+        if (Vector3.Distance(myUnit.transform.position, t_pos) < 0.1f)
+        {
+            myUnit.transform.position = t_pos;
+            return true;
+        }
+        return false;
+    }
     public MoveState(Unit myUnit)
     {
         this.myUnit = myUnit;
@@ -197,21 +224,24 @@ public class MoveState : IState
     {
         myUnit.MoveTo(t_pos);
     }
-
     public void Exit()
     {
         myUnit.Stop();
     }
-
     public void FixedUpdate()
     {
     }
-
     public void LateUpdate()
     {
     }
-
     public void Update()
     {
+        if (isArrive())
+        {
+            myUnit.SetState(myUnit.state_idle);
+        }
     }
 }
+
+//todo
+
