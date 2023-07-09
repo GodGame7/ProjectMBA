@@ -6,29 +6,38 @@ using UnityEngine.AI;
 public class Unit : MonoBehaviour
 {
     RTS_Cam.RTS_Camera cam;
+    [Header("네트워크 세팅")]
+    public bool myUnit = false;
     public int team = 0; // 0 = blue, 1 = red, 2 = neutral;
-    [SerializeField] GameObject marker;
     [Header("자동세팅 컴포넌트")]
+    [SerializeField] GameObject marker;
     [SerializeField] NavMeshAgent navAgent;
     [SerializeField] public Animator anim;
-    //
     [Header("데이터 받기")]
     [SerializeField] Champion unitData;
     public Sprite img;
     public float maxHp;
-    public float curHp;
+    private float _curHp;
+    public float curHp { get { return _curHp; } set { _curHp = value; } }
     public float maxMp;
     public float curMp;
     public float atk;
     public float range;
-    public float moveSpeed;
+    private float _moveSpeed;
+    public float moveSpeed { get { return _moveSpeed; } set { _moveSpeed = value; SetMoveSpeed(); } }
     public int level;
     public string champName;
-    public float attackSpeed;
-    public bool myUnit = false;
+    private float _attackSpeed;
+    public float attackSpeed { 
+        get { return _attackSpeed; } 
+        set { if (_attackSpeed != value) { _attackSpeed = value; SetAttackSpeed(); } } }
+    [Header("공격 상태 변수")]
+    public float attackCoolTime;
+    public float currentAttackCoolTime;
+    public bool isAttacking = false;
     public bool canReceive() { return true; }
-    //
-    [SerializeField] IState cur_state;
+    //todo 명령을 수행 가능 여부 판단 메소드 필요.
+    public IState cur_state;
     [Space]
     [Header("State Machine")]
     public IdleState state_idle;
@@ -56,7 +65,8 @@ public class Unit : MonoBehaviour
     #region StateMachine.Update~LateUpdate 
     private void Update()
     {
-        cur_state.Update();        
+        cur_state.Update();
+        if(currentAttackCoolTime <= attackCoolTime) currentAttackCoolTime += Time.deltaTime;
     }
     private void FixedUpdate()
     {
@@ -88,6 +98,10 @@ public class Unit : MonoBehaviour
     {
         navAgent.SetDestination(t_pos);
     }
+    public void OnDamage(float dmg)
+    {
+        curHp -= dmg;
+    }
     #endregion
 
 
@@ -113,4 +127,20 @@ public class Unit : MonoBehaviour
         champName = unitData.champName;
     }
     #endregion
+
+
+
+    void SetAttackSpeed()
+    {
+        //공격 쿨타임 계산
+        attackCoolTime = 1f / _attackSpeed;
+        currentAttackCoolTime = attackCoolTime;
+        //공격속도가 1보다 빠르면 애니메이션 빠르게 재생하기 위해서 배속 설정, 아니면 기본속도 1로 재생
+        if (_attackSpeed > 1) anim.SetFloat("AttackSpeed", _attackSpeed);
+        else anim.SetFloat("AttackSpeed", 1);
+    }
+    void SetMoveSpeed()
+    {
+        navAgent.speed = _moveSpeed / 40f;
+    }
 }
