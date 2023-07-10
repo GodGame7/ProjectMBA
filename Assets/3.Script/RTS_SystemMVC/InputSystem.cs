@@ -17,6 +17,7 @@ public class InputSystem : MonoBehaviour
 
     [Header("View 연동")]
     View view;
+    [SerializeField]ParticleSystem clickParticle;
 
     private Camera mainCamera;
     private void Awake()
@@ -31,10 +32,17 @@ public class InputSystem : MonoBehaviour
         OnMouseClickTargetting(); //좌클릭
         OnAttackButton();
         AttackInputMode();
+        if(particleTime < 1f) particleTime += Time.deltaTime;
     }
 
 
     #region MouseInputSystem
+    float particleTime = 1f;
+    void ClickParticlePlay(Vector3 hitPoint)
+    {
+        clickParticle.transform.position = hitPoint;
+        if (particleTime >= 0.1f) { Debug.Log(particleTime); clickParticle.Play(); particleTime = 0; }
+    }
     // UpdateMethod
     public void OnMouseClickMove() //우클릭
     {
@@ -50,12 +58,14 @@ public class InputSystem : MonoBehaviour
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerGround))
             {
+                ClickParticlePlay(hit.point);
                 cm.AddCommand(new MoveCommand(cm.receiver, hit.point));
             }
         }
     }
     public void OnMouseClickTargetting()
     {
+        if (Input.GetKeyDown(KeyCode.Escape)) { view.ResetTarget(); }
         if (Input.GetMouseButtonDown(0))
         {
             if (CheckUIClick())
@@ -75,8 +85,7 @@ public class InputSystem : MonoBehaviour
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerUnit))
         {
             if (!hit.transform.GetComponent<Unit>().myUnit)
-            { view.SetTarget(hit.transform.GetComponent<Unit>()); } // 타겟 유닛으로 설정
-            else { view.ResetTarget(); } // 타겟 유닛 null
+            { view.SetTarget(hit.transform.GetComponent<Unit>()); return; } // 타겟 유닛으로 설정
         }
     }
     bool CheckUIClick()//클릭 위치가 UI 위인지 확인
@@ -127,16 +136,20 @@ public class InputSystem : MonoBehaviour
                 {
                     Unit t_unit;
                     if (hit.transform.TryGetComponent(out t_unit))
-                    {                        
-                        if (t_unit.GetTeam() == cm.receiver.GetTeam())
+                    {
+                        if (t_unit.isAlive)
                         {
-                            Debug.Log("Cannot Attack Ally");
-                        }
-                        else if (t_unit.GetTeam() != cm.receiver.GetTeam())
-                        {
-                            //todo 커서 이미지 변경했던 것 등 off메소드
-                            inputMode = 0;
-                            cm.AddCommand(new AttackCommand(cm.receiver, t_unit));
+                            if (t_unit.GetTeam() == cm.receiver.GetTeam())
+                            {
+                                Debug.Log("Cannot Attack Ally");
+                            }
+                            else if (t_unit.GetTeam() != cm.receiver.GetTeam())
+                            {
+                                //todo 커서 이미지 변경했던 것 등 off메소드
+                                inputMode = 0;
+                                cm.AddCommand(new AttackCommand(cm.receiver, t_unit));
+                                return;
+                            }
                         }
                     }
                 }
@@ -144,6 +157,7 @@ public class InputSystem : MonoBehaviour
                 {
                     Vector3 t_pos = hit.point;
                     inputMode = 0;
+                    ClickParticlePlay(hit.point);
                     cm.AddCommand(new AttackCommand(cm.receiver, t_pos));
                 }
             }

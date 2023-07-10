@@ -19,7 +19,7 @@ public class IdleState : IState
     public IdleState(Unit myUnit)
     {
         this.myUnit = myUnit;
-        searchArea = new Vector3(myUnit.range, myUnit.range, myUnit.range);
+        searchArea = new Vector3(myUnit.range * 1.1f, myUnit.range * 1.1f, myUnit.range * 1.1f);
     }
     public void Enter()
     {
@@ -42,7 +42,7 @@ public class IdleState : IState
     {
         if (Search())
         {
-            if (targetUnit != null) { myUnit.state_attack.Init(targetUnit); myUnit.SetState(myUnit.state_attack); }
+            if (targetUnit != null) { myUnit.state_attack.Init(targetUnit, 0); myUnit.SetState(myUnit.state_attack); }
             else Debug.Log("Idle state searched target but targetUnit is null, IDK why doesn't");
         }
     }
@@ -58,7 +58,7 @@ public class IdleState : IState
                 if (col.GetComponent<Unit>() != null)
                 {
                     Unit hittedUnit = col.GetComponent<Unit>();
-                    if (hittedUnit.GetTeam() != myUnit.GetTeam())
+                    if (hittedUnit.GetTeam() != myUnit.GetTeam() && hittedUnit.isAlive)
                     { targetUnit = col.GetComponent<Unit>(); return true; }                    
                 }
             }
@@ -102,12 +102,14 @@ public class AttackState : IState
         this.myUnit = myUnit;
         t_unit = null;
         this.t_pos = myUnit.transform.position;
-        searchArea = new Vector3(myUnit.range, myUnit.range, myUnit.range);
+        searchArea = new Vector3(myUnit.range*1.1f, myUnit.range * 1.1f, myUnit.range * 1.1f);
         animator = myUnit.anim;
     }
-    public void Init(Unit targetUnit)
+    public void Init(Unit targetUnit, int index)
     {
         t_unit = targetUnit;
+        t_pos = t_unit.transform.position - ((t_unit.transform.position - myUnit.transform.position).normalized);
+        if(index == 0) t_pos = myUnit.transform.position;
     }    
     public void Init(Vector3 t_pos)
     {
@@ -138,17 +140,21 @@ public class AttackState : IState
         {
             if (isTarget)
             {
-                if (isInRange(t_unit))
+                if (t_unit.isAlive)
                 {
-                    myUnit.Stop();
-                    Quaternion targetRotation = Quaternion.LookRotation(t_unit.transform.position - myUnit.transform.position);
-                    myUnit.transform.rotation = Quaternion.Slerp(myUnit.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime * attackSpeed);
-                    if (currentAttackCoolTime >= attackCoolTime)
-                    {                        
-                        Attack();
+                    if (isInRange(t_unit))
+                    {
+                        myUnit.Stop();
+                        Quaternion targetRotation = Quaternion.LookRotation(t_unit.transform.position - myUnit.transform.position);
+                        myUnit.transform.rotation = Quaternion.Slerp(myUnit.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime * attackSpeed);
+                        if (currentAttackCoolTime >= attackCoolTime)
+                        {
+                            Attack();
+                        }
                     }
+                    else myUnit.MoveTo(t_unit.transform.position);
                 }
-                else myUnit.MoveTo(t_unit.transform.position);
+                else t_unit = null;
             }
             else if (!isTarget)
             {
@@ -187,7 +193,7 @@ public class AttackState : IState
         {
             foreach (var col in hitted)
             {
-                if (col.GetComponent<Unit>().GetTeam() != myUnit.GetTeam())
+                if (col.GetComponent<Unit>().GetTeam() != myUnit.GetTeam() && col.GetComponent<Unit>().isAlive)
                 {
                     t_unit = col.GetComponent<Unit>();
                     return;
@@ -244,6 +250,42 @@ public class MoveState : IState
         {
             myUnit.SetState(myUnit.state_idle);
         }
+    }
+}
+
+public class DieState : IState
+{
+    Unit myUnit;
+    void Revive()
+    {
+        if (myUnit.reviveTime > 0) myUnit.reviveTime -= Time.deltaTime;
+        else if (myUnit.reviveTime <= 0) myUnit.Revival();
+    }
+    public DieState(Unit myUnit)
+    {
+        this.myUnit = myUnit;
+    }
+    public void Enter()
+    {
+        myUnit.Death();
+    }
+
+    public void Exit()
+    {
+
+    }
+
+    public void FixedUpdate()
+    {
+    }
+
+    public void LateUpdate()
+    {
+        Revive();
+    }
+
+    public void Update()
+    {
     }
 }
 

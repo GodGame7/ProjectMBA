@@ -30,12 +30,16 @@ public class Unit : MonoBehaviour
     private float _attackSpeed;
     public float attackSpeed { 
         get { return _attackSpeed; } 
-        set { if (_attackSpeed != value) { _attackSpeed = value; SetAttackSpeed(); } } }
+        set { if (_attackSpeed != value) { 
+                _attackSpeed = value; SetAttackSpeed(); } } }
     [Header("공격 상태 변수")]
     public float attackCoolTime;
     public float currentAttackCoolTime;
     public bool isAttacking = false;
-    public bool canReceive() { return true; }
+    [Header("죽음 상태 변수")]
+    public float reviveTime;
+    public bool isAlive;
+    public bool canReceive() { if (cur_state == state_die) return false; else return true; }
     //todo 명령을 수행 가능 여부 판단 메소드 필요.
     public IState cur_state;
     [Space]
@@ -43,11 +47,13 @@ public class Unit : MonoBehaviour
     public IdleState state_idle;
     public AttackState state_attack;
     public MoveState state_move;
+    public DieState state_die;
     void InitState()
     {
         state_idle = new IdleState(this);
         state_attack = new AttackState(this);
         state_move = new MoveState(this);
+        state_die = new DieState(this);
         cur_state = state_idle;
     }
     #region Unity CallBack Method
@@ -100,10 +106,30 @@ public class Unit : MonoBehaviour
     }
     public void OnDamage(float dmg)
     {
-        curHp -= dmg;
+        if (isAlive) { curHp -= dmg; }
+        
+        if (curHp <= 0)
+        {
+            curHp = 0;
+            reviveTime = level * 5f;
+            isAlive = false;
+            SetState(state_die);
+        }
+    }
+    public void Death()
+    {
+        navAgent.enabled = false;
+        anim.Play("Death");
+    }
+    public void Revival()
+    {
+        curHp = maxHp;
+        curMp = maxMp;
+        isAlive = true;
+        navAgent.enabled = true;
+        SetState(state_idle);
     }
     #endregion
-
 
     #region Init메소드
     public void InitMyUnit()
@@ -114,6 +140,7 @@ public class Unit : MonoBehaviour
     }
     public void Init_status()
     {
+        isAlive = true;
         img = unitData.img;
         maxHp = unitData.maxHp;
         curHp = unitData.maxHp;

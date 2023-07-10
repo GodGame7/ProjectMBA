@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b50ce3b43bfa004e861bdeeab0ae207, type: 3}
+  m_Name: ArcherInstant
+  m_EditorClassIdentifier: 
+  inputType: 0
+  outputType: 0
+  targetType: 0
+  skillName: MirrageDash
+  dmgs: []
+  level: 1
+  maxLv: 5
+  cooldownTime: 27
+  activateTime: 0
+  durationTime: 12
+  range: 0
+  ccType: 0
+  ccDurationTime: 0
+  afxs:
+  - {fileID: 8300000, guid: b434d5f64303d414597699c978cdb397, type: 3}

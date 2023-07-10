@@ -38,12 +38,12 @@ public class AttackCommand : ICommand
     {
         myUnit = receiver;
         this.t_unit = t_unit;
-        t_pos = new Vector3(-100, -100, -100);
+        t_pos = myUnit.transform.position;
     }
     public void Execute()
     {
         if (t_unit != null) {
-            myUnit.state_attack.Init(t_unit);
+            myUnit.state_attack.Init(t_unit, 1);
             myUnit.SetState(myUnit.state_attack);
         }
         else { 

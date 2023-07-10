@@ -30,6 +30,21 @@ public class ArcherArrow : MonoBehaviour
                 Destroy(gameObject);
             }
         }
+        else if (t_unit == null)
+        {
+            dir = t_pos - m_pos;
+            dir.y = 0f;
+            dir = dir.normalized;
+            transform.Translate(dir * speed * Time.deltaTime, Space.World);
+            transform.rotation = Quaternion.LookRotation(dir);
+
+            float distance = Vector3.Distance(transform.position, t_pos);
+            if (distance <= hitDistance)
+            {
+                t_unit.OnDamage(dmg);
+                Destroy(gameObject);
+            }
+        }
     }
     public void Init(Unit target, float dmg)
     {

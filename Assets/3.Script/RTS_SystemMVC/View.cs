@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class View : MonoBehaviour
 {
+    [Space]
     [Header("UI Object for SetActive")]
     public GameObject myUnitView;
     public GameObject minimap;
@@ -29,9 +30,13 @@ public class View : MonoBehaviour
     public Text t_as;
     public Text t_ar;
     public Text t_ms;
+    public Slider t_hpSlider;
+    public Slider t_mpSlider;
     public Text t_hpTxt;
     public Text t_mpTxt;
 
+    [Space]
+    [Header("¸ô¶ó")]
     [SerializeField]
     RTS_Cam.RTS_Camera cam;
     [SerializeField]
@@ -49,15 +54,22 @@ public class View : MonoBehaviour
     }
     private void LateUpdate()
     {
+        MyUIUpdate();
         TargetInfoUpdate();
     }
-
+    public void OnInputFieldChange(InputField inputField)
+    {
+        myUnit.attackSpeed = float.Parse(inputField.text);
+    }
 
     public void BtnInitMyUnit()
     {
+        if(targetUnit != null) { 
         myUnit = targetUnit;
-        targetUnit = null;
+        myUnit.myUnit = true;
         InitMyUnit(myUnit);
+        targetUnit = null;
+        }
     }
     public void InitMyUnit(Unit unit)
     {
@@ -66,6 +78,32 @@ public class View : MonoBehaviour
         FindObjectOfType<CommandMachine>().Init(unit);
     }
 
+
+    #region MyUI
+    void MyUIUpdate()
+    {
+        if (myUnit != null)
+        {
+            if (!myUnitView.activeSelf) myUnitView.SetActive(true);
+            SetMyUI(myUnit);
+        }
+        else { if (myUnitView.activeSelf) myUnitView.SetActive(false); }
+    }
+    void SetMyUI(Unit unit)
+    {
+        m_champImg.sprite = unit.img;
+        m_champLevel.text = $"{unit.level}";
+        //m_expSlider = unit.exp;   todo
+        //m_expTxt;
+        m_hpSlider.value = unit.curHp / unit.maxHp;
+        m_mpSlider.value = unit.curMp / unit.maxMp;        
+        m_hpTxt.text = $"{unit.curHp} / {unit.maxHp}";
+        m_mpTxt.text = $"{unit.curMp} / {unit.maxMp}";
+    }
+
+    #endregion
+
+    #region TargetUI
     void TargetInfoUpdate()
     {
         if (targetUnit != null)
@@ -73,7 +111,7 @@ public class View : MonoBehaviour
             if (!targetView.activeSelf) targetView.SetActive(true);
             SetTargetUI(targetUnit);
         }
-        else if (targetView.activeSelf) targetView.SetActive(false);
+        else { if (targetView.activeSelf) targetView.SetActive(false); }
     }
     void SetTargetUI(Unit unit)
     {
@@ -85,6 +123,8 @@ public class View : MonoBehaviour
         t_as.text = $"{unit.attackSpeed}";
         t_ms.text = $"{unit.moveSpeed}";
         t_ar.text = $"{unit.range}";
+        t_hpSlider.value = unit.curHp / unit.maxHp;
+        t_mpSlider.value = unit.curMp / unit.maxMp;
         t_hpTxt.text = $"{unit.curHp} / {unit.maxHp}";
         t_mpTxt.text = $"{unit.curMp} / {unit.maxMp}";
     }
@@ -96,4 +136,5 @@ public class View : MonoBehaviour
     {
         targetUnit = null;
     }
+    #endregion
 }
