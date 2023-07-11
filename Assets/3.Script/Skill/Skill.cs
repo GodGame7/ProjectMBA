@@ -18,6 +18,7 @@ public class Skill : ScriptableObject
     public float activateTime;
     public float durationTime;
     public float range;
+    public float area;
 
     [Tooltip("0=none, 1=stun, 2=knock")]
     public int ccType;

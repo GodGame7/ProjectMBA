@@ -41,6 +41,7 @@ public class InputSystem : MonoBehaviour
     float particleTime = 1f;
     void ClickParticlePlay(Vector3 hitPoint)
     {
+        hitPoint.y = 0.11f;
         clickParticle.transform.position = hitPoint;
         if (particleTime >= 0.1f) { clickParticle.Play(); particleTime = 0; }
     }
