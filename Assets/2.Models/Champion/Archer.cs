@@ -16,7 +16,7 @@ public class Archer : MonoBehaviour
     {
         myUnit.currentAttackCoolTime = 0;
         GameObject obj = Instantiate(arrowPrefabs, shootPos.position, Quaternion.identity);
-        obj.GetComponent<ArcherArrow>().Init(t_unit, myUnit.atk);
+        obj.GetComponent<ArcherArrow>().Init(myUnit, t_unit, myUnit.atk);
     }
     public void AttackEnd()
     {

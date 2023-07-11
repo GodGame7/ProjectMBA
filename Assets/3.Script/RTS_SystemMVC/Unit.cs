@@ -104,12 +104,13 @@ public class Unit : MonoBehaviour
     {
         navAgent.SetDestination(t_pos);
     }
-    public void OnDamage(float dmg)
+    public void OnDamage(Unit attackUnit, float dmg)
     {
         if (isAlive) { curHp -= dmg; }
         
         if (curHp <= 0)
         {
+            Debug.Log($"Team : {attackUnit.team}의 {attackUnit.champName}이 Team : {this.team}의 {this.champName}을 죽였습니다.");
             curHp = 0;
             reviveTime = level * 5f;
             isAlive = false;

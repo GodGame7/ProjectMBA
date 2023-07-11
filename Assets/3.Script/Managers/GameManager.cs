@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     }
     public void CursorChangeBtn()
     {
-        CursorTexture(count%2);
+        CursorTexture(count%3);
         count++;
     }
 }

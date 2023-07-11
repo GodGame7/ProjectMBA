@@ -32,6 +32,7 @@ public class InputSystem : MonoBehaviour
         OnMouseClickTargetting(); //좌클릭
         OnAttackButton();
         AttackInputMode();
+        StopInput();
         if(particleTime < 1f) particleTime += Time.deltaTime;
     }
 
@@ -41,7 +42,7 @@ public class InputSystem : MonoBehaviour
     void ClickParticlePlay(Vector3 hitPoint)
     {
         clickParticle.transform.position = hitPoint;
-        if (particleTime >= 0.1f) { Debug.Log(particleTime); clickParticle.Play(); particleTime = 0; }
+        if (particleTime >= 0.1f) { clickParticle.Play(); particleTime = 0; }
     }
     // UpdateMethod
     public void OnMouseClickMove() //우클릭
@@ -161,6 +162,14 @@ public class InputSystem : MonoBehaviour
                     cm.AddCommand(new AttackCommand(cm.receiver, t_pos));
                 }
             }
+        }
+    }
+
+    public void StopInput()
+    {
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            cm.AddCommand(new StopCommand(cm.receiver));
         }
     }
 }

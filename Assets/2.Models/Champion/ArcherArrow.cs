@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ArcherArrow : MonoBehaviour
 {
+    Unit m_unit;
     Unit t_unit;
     float dmg = 1f;
     float speed = 20f;
@@ -26,7 +27,7 @@ public class ArcherArrow : MonoBehaviour
             float distance = Vector3.Distance(transform.position, t_pos);
             if (distance <= hitDistance)
             {
-                t_unit.OnDamage(dmg);
+                t_unit.OnDamage(m_unit, dmg);
                 Destroy(gameObject);
             }
         }
@@ -41,13 +42,13 @@ public class ArcherArrow : MonoBehaviour
             float distance = Vector3.Distance(transform.position, t_pos);
             if (distance <= hitDistance)
             {
-                t_unit.OnDamage(dmg);
-                Destroy(gameObject);
+               Destroy(gameObject);
             }
         }
     }
-    public void Init(Unit target, float dmg)
+    public void Init(Unit user, Unit target, float dmg)
     {
+        m_unit = user;
         t_unit = target;
         this.dmg = dmg;
     }

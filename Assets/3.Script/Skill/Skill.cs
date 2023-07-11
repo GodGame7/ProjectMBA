@@ -35,10 +35,13 @@ public class Skill : ScriptableObject
     public virtual void Activate(GameObject targetObj) { }
     public virtual void Activate(Unit targetUnit) { }
     public virtual void Activate(Vector3 targetPos) { }
-
     public virtual void Execute() { }
     public virtual void Execute(GameObject targetObj) { }
     public virtual void Execute(Unit targetUnit) { }
     public virtual void Execute(Vector3 targetPos) { }
+    public virtual void Exit() { }
+    public virtual void Exit(GameObject targetObj) { }
+    public virtual void Exit(Unit targetUnit) { }
+    public virtual void Exit(Vector3 targetPos) { }
 
 }
