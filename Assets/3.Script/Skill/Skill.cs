@@ -28,9 +28,9 @@ public class Skill : ScriptableObject
     public AudioClip[] afxs;
 
     protected Unit myUnit;
-    public virtual void Init(Unit unit)
+    public virtual void Init(GameObject obj)
     {
-        myUnit = unit;
+        myUnit = obj.GetComponent<Unit>();
     }
     public virtual void Activate() { }
     public virtual void Activate(GameObject targetObj) { }

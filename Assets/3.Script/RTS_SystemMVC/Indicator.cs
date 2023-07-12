@@ -38,7 +38,7 @@ public class Indicator : MonoBehaviour
 
                 Vector3 clampedPoint = transform.position + clampedDirection;
 
-                areaCircle.transform.position = new Vector3(clampedPoint.x, transform.position.y, clampedPoint.z);
+                areaCircle.transform.position = new Vector3(clampedPoint.x, 0.1f, clampedPoint.z);
             }
         }
     }

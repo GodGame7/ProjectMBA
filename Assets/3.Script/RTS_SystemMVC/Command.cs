@@ -65,3 +65,36 @@ public class StopCommand : ICommand
         myUnit.SetState(myUnit.state_idle);
     }
 }
+
+public class SkillCommand : ICommand
+{
+    Unit myUnit;
+    Vector3 t_pos;
+    Unit t_unit;
+    Skill skill;
+    public SkillCommand(Unit receiver, Skill skill)
+    {
+        myUnit = receiver;
+        this.skill = skill;
+        t_unit = null;
+        t_pos = myUnit.transform.position;
+    }
+    public SkillCommand(Unit receiver, Skill skill, Vector3 t_pos)
+    {
+        myUnit = receiver;
+        this.skill = skill;
+        this.t_pos = t_pos;
+        t_unit = null;
+    }
+    public SkillCommand(Unit receiver, Skill skill, Unit t_unit)
+    {
+        myUnit = receiver;
+        this.skill = skill;
+        this.t_unit = t_unit;
+        t_pos = myUnit.transform.position;
+    }
+    public void Execute()
+    {
+                
+    }
+}

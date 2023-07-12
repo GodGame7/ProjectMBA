@@ -39,7 +39,8 @@ public class Unit : MonoBehaviour
     [Header("죽음 상태 변수")]
     public float reviveTime;
     public bool isAlive;
-    public bool canReceive() { if (cur_state == state_die) return false; else return true; }
+    public bool isStopT;
+    public bool canReceive() { if (cur_state == state_die || isStopT) return false; else return true; }
     //todo 명령을 수행 가능 여부 판단 메소드 필요.
     public IState cur_state;
     [Space]
