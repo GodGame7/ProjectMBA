@@ -289,5 +289,37 @@ public class DieState : IState
     }
 }
 
+public class SkillState : IState
+{
+    #region º¯¼öµé
+    Unit myUnit;
+    Unit t_unit;
+    Vector3 t_pos;
+    #endregion
+    public void Enter()
+    {
+      
+    }
+
+    public void Exit()
+    {
+       
+    }
+
+    public void FixedUpdate()
+    {
+      
+    }
+
+    public void LateUpdate()
+    {
+      
+    }
+
+    public void Update()
+    {
+       
+    }
+}
 //todo
 
