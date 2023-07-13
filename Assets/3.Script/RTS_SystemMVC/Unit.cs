@@ -39,7 +39,7 @@ public class Unit : MonoBehaviour
     [Header("죽음 상태 변수")]
     public float reviveTime;
     public bool isAlive;
-    public bool isStopT;
+    public bool isStopT = false;
     public bool canReceive() { if (cur_state == state_die || isStopT) return false; else return true; }
     //todo 명령을 수행 가능 여부 판단 메소드 필요.
     public IState cur_state;
@@ -49,6 +49,15 @@ public class Unit : MonoBehaviour
     public AttackState state_attack;
     public MoveState state_move;
     public DieState state_die;
+
+    [Header("SkillSet")]
+    public Skill skillQ;
+    public Skill skillW;
+    public Skill skillE;
+    public Skill skillR;
+    public Skill skillD;
+    public Skill skillF;
+
     void InitState()
     {
         state_idle = new IdleState(this);
@@ -120,6 +129,7 @@ public class Unit : MonoBehaviour
     }
     public void Death()
     {
+        isAlive = false;
         navAgent.enabled = false;
         anim.Play("Death");
     }
@@ -139,6 +149,7 @@ public class Unit : MonoBehaviour
         //todo : myUnit일 경우 카메라나 컨트롤러와 연동해야해요.
         cam.InitPlayer(this);
         FindObjectOfType<CommandMachine>().Init(this);
+        FindObjectOfType<SkillMachine>().Init(this);
     }
     public void Init_status()
     {

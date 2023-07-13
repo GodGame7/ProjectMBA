@@ -11,6 +11,7 @@ public class Skill : ScriptableObject
     public OutputType outputType;    
     public TargetType targetType;
     public string skillName;
+    public Sprite icon;
     public float[] dmgs;
     public int level = 1;
     public int maxLv = 5;
@@ -32,6 +33,12 @@ public class Skill : ScriptableObject
     {
         myUnit = obj.GetComponent<Unit>();
     }
+    public virtual void Init(Unit unit)
+    {
+        myUnit = unit;
+    }
+
+
     public virtual void Activate() { }
     public virtual void Activate(GameObject targetObj) { }
     public virtual void Activate(Unit targetUnit) { }
@@ -44,5 +51,4 @@ public class Skill : ScriptableObject
     public virtual void Exit(GameObject targetObj) { }
     public virtual void Exit(Unit targetUnit) { }
     public virtual void Exit(Vector3 targetPos) { }
-
 }

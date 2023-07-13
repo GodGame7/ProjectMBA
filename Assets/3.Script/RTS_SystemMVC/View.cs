@@ -61,7 +61,6 @@ public class View : MonoBehaviour
     {
         myUnit.attackSpeed = float.Parse(inputField.text);
     }
-
     public void BtnInitMyUnit()
     {
         if(targetUnit != null) { 
@@ -76,8 +75,8 @@ public class View : MonoBehaviour
         //todo : myUnit일 경우 카메라나 컨트롤러와 연동해야해요.
         cam.InitPlayer(unit);
         FindObjectOfType<CommandMachine>().Init(unit);
+        FindObjectOfType<SkillMachine>().Init(unit);
     }
-
 
     #region MyUI
     void MyUIUpdate()

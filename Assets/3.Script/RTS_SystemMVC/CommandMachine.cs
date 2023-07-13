@@ -17,6 +17,10 @@ public class CommandMachine : MonoBehaviour
         {
             CommandMachineOn();
         }
+        else
+        {
+            if (commandQueue.Count > 0) commandQueue.Clear();
+        }
     }
     public void AddCommand(ICommand c)
     {

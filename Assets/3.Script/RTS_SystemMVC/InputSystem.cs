@@ -6,6 +6,13 @@ using UnityEngine.EventSystems;
 
 public class InputSystem : MonoBehaviour
 {
+    [Header("키 세팅")]
+    public KeyCode q;
+    public KeyCode w;
+    public KeyCode e;
+    public KeyCode r;
+    public KeyCode d;
+    public KeyCode f;
     [Header("레이어 세팅")]
     [SerializeField] LayerMask layerUnit;
     [SerializeField] LayerMask layerGround;
@@ -13,8 +20,9 @@ public class InputSystem : MonoBehaviour
     [Tooltip("InputMode   0 = Idle / 1 = Targetting ")]
     public int inputMode = 0; // 0 = Idle, 1 = Attack, 2 = Skill
     [Header("스킬")]
-
-
+    SkillMachine sm;
+    Skill cur_skill;
+    Indicator indicator;
     [Header("View 연동")]
     View view;
     [SerializeField]ParticleSystem clickParticle;
@@ -23,8 +31,13 @@ public class InputSystem : MonoBehaviour
     private void Awake()
     {
         mainCamera = Camera.main;
+        sm = FindObjectOfType<SkillMachine>();
         cm = FindObjectOfType<CommandMachine>();
         view = FindObjectOfType<View>();
+    }
+    private void Start()
+    {
+        indicator = cm.receiver.GetComponentInChildren<Indicator>();
     }
     private void Update()
     {
@@ -165,7 +178,45 @@ public class InputSystem : MonoBehaviour
             }
         }
     }
-
+    public void SkillInputMode()
+    {
+        if (inputMode == 2)
+        {
+            //타게팅입력모드
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                inputMode = 0;
+                return;
+            }
+            if (Input.GetMouseButtonDown(0))
+            {
+                RaycastHit hit;
+                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerUnit))
+                {
+                    Unit t_unit;
+                    if (hit.transform.TryGetComponent(out t_unit))
+                    {
+                        if (t_unit.isAlive)
+                        {
+                            if (t_unit.GetTeam() == cm.receiver.GetTeam())
+                            {
+                                Debug.Log("Cannot Attack Ally");
+                            }
+                            else if (t_unit.GetTeam() != cm.receiver.GetTeam())
+                            {
+                                //todo 커서 이미지 변경했던 것 등 off메소드
+                                inputMode = 0;
+                                cm.AddCommand(new AttackCommand(cm.receiver, t_unit));
+                                return;
+                            }
+                        }
+                    }
+                }
+                else { Debug.Log("유효하지 않은 목표입니다"); }
+            }
+        }
+    }
     public void StopInput()
     {
         if (Input.GetKeyDown(KeyCode.S))
@@ -173,5 +224,92 @@ public class InputSystem : MonoBehaviour
             cm.AddCommand(new StopCommand(cm.receiver));
         }
     }
+
+
+
+    #region 스킬키입력체크
+    void InputSkillKey()
+    {
+        if (Input.GetKeyDown(q))
+        {
+            if (sm.isSkillReady(q))
+            {
+                switch (sm.q_skill.inputType)
+                {
+                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.q_skill)); break;
+                    case InputType.Target: inputMode = 2; cur_skill = sm.q_skill; break;
+                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.q_skill; break;
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(w))
+        {
+            if (sm.isSkillReady(w))
+            {
+                switch (sm.w_skill.inputType)
+                {
+                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.w_skill)); break;
+                    case InputType.Target: inputMode = 2; cur_skill = sm.w_skill; break;
+                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.w_skill; break;
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(e))
+        {
+            if (sm.isSkillReady(e))
+            {
+                switch (sm.e_skill.inputType)
+                {
+                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.e_skill)); break;
+                    case InputType.Target: inputMode = 2; cur_skill = sm.e_skill; break;
+                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.e_skill; break;
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(r)
+        {
+            if (sm.isSkillReady(r))
+            {
+                switch (sm.r_skill.inputType)
+                {
+                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.r_skill)); break;
+                    case InputType.Target: inputMode = 2; cur_skill = sm.r_skill; break;
+                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.r_skill; break;
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(d))
+        {
+            if (sm.isSkillReady(d))
+            {
+                switch (sm.d_skill.inputType)
+                {
+                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.d_skill)); break;
+                    case InputType.Target: inputMode = 2; cur_skill = sm.d_skill; break;
+                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.d_skill; break;
+                }
+            }
+        }
+
+
+        if (Input.GetKeyDown(f))
+        {
+            if (sm.isSkillReady(f))
+            {
+                switch (sm.f_skill.inputType)
+                {
+                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.f_skill)); break;
+                    case InputType.Target: inputMode = 2; cur_skill = sm.f_skill; break;
+                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.f_skill; break;
+                }
+            }
+        }
+    }
+    #endregion
+
 }
 

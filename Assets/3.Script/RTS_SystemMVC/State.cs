@@ -289,21 +289,48 @@ public class DieState : IState
     }
 }
 
+public enum StateInSkill { None, Activated, Executed, Exited }
 public class SkillState : IState
 {
     #region º¯¼öµé
+    Skill skill;
     Unit myUnit;
     Unit t_unit;
     Vector3 t_pos;
     #endregion
+    StateInSkill state = StateInSkill.None;
+    float activateTime;
+
+    public SkillState(Skill skill, Unit user)
+    {
+        this.skill = skill;
+        this.myUnit = user;
+        t_unit = null;
+        t_pos = myUnit.transform.position;
+    }
+    public SkillState(Skill skill, Unit user, Unit t_unit)
+    {
+        this.myUnit = user;
+        this.t_unit = t_unit;
+        t_pos = t_unit.transform.position;
+    }
+    public SkillState(Skill skill, Unit user, Vector3 t_pos)
+    {
+        this.myUnit = user;
+        t_unit = null;
+        this.t_pos = t_pos;
+    }
     public void Enter()
     {
-      
+        activateTime = skill.activateTime;
+        skill.Init(myUnit);
+        ActivateSkill();
     }
-
     public void Exit()
     {
-       
+        state = StateInSkill.None;
+        t_unit = null;
+        if(myUnit.isAlive) myUnit.SetState(myUnit.state_idle);
     }
 
     public void FixedUpdate()
@@ -318,8 +345,56 @@ public class SkillState : IState
 
     public void Update()
     {
-       
+        if (skill != null)
+        {
+            switch (state)
+            {
+                case StateInSkill.None: break;
+                case StateInSkill.Activated:
+                    if (activateTime < skill.activateTime)
+                    {
+                        activateTime += Time.deltaTime;
+                    }
+                    else
+                    {
+                        ExecuteSkill();
+                    }
+                    break;
+                case StateInSkill.Executed: Exit(); break;
+            }
+        }
     }
+
+    void ActivateSkill()
+    {
+        if (skill != null)
+        {
+            switch (skill.inputType)
+            {
+                case InputType.Instant: skill.Activate(); state = StateInSkill.Activated;  break;
+                case InputType.Target: skill.Activate(t_unit); state = StateInSkill.Activated; break;
+                case InputType.NonTarget: skill.Activate(t_pos); state = StateInSkill.Activated; break;
+            }
+        }
+    }
+    void ExecuteSkill()
+    {
+        if (skill != null)
+        {
+            switch (skill.outputType)
+            {
+                case OutputType.None: skill.Execute(); state = StateInSkill.Executed; state = StateInSkill.Executed; break;
+                case OutputType.Target: skill.Execute(t_unit); state = StateInSkill.Executed; state = StateInSkill.Executed; break;
+                case OutputType.AoE: skill.Execute(t_pos); state = StateInSkill.Executed; state = StateInSkill.Executed; break;
+            }
+        }
+    }
+    void ExitSkill()
+    {
+
+    }
+
+
 }
 //todo
 

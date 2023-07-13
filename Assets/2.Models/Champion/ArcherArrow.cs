@@ -12,8 +12,10 @@ public class ArcherArrow : MonoBehaviour
     Vector3 t_pos;
     Vector3 m_pos;
     Vector3 dir;
+    bool ishitted = false;
     private void Update()
     {
+        
         if (t_unit != null)
         {
             t_pos = t_unit.transform.position;
@@ -27,8 +29,9 @@ public class ArcherArrow : MonoBehaviour
             float distance = Vector3.Distance(transform.position, t_pos);
             if (distance <= hitDistance)
             {
-                t_unit.OnDamage(m_unit, dmg);
-                Destroy(gameObject);
+                if (!ishitted) { ishitted = true; t_unit.OnDamage(m_unit, dmg); }
+                this.GetComponentInChildren<TrailRenderer>().enabled = false;
+                Destroy(gameObject, 1f);
             }
         }
         else if (t_unit == null)
@@ -42,7 +45,8 @@ public class ArcherArrow : MonoBehaviour
             float distance = Vector3.Distance(transform.position, t_pos);
             if (distance <= hitDistance)
             {
-               Destroy(gameObject);
+               this.GetComponentInChildren<TrailRenderer>().enabled = false;
+               Destroy(gameObject, 1f);
             }
         }
     }

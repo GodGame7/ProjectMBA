@@ -410,7 +410,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
-  m_FillAmount: 0.639
+  m_FillAmount: 0.723
   m_FillClockwise: 0
   m_FillOrigin: 2
   m_UseSpriteMesh: 0
@@ -1910,7 +1910,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &512546125
 Transform:
   m_ObjectHideFlags: 0
@@ -1992,7 +1992,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &540291786
 Transform:
   m_ObjectHideFlags: 0
@@ -3941,6 +3941,7 @@ GameObject:
   - component: {fileID: 1129249157}
   - component: {fileID: 1129249159}
   - component: {fileID: 1129249158}
+  - component: {fileID: 1129249160}
   m_Layer: 0
   m_Name: RTSManager
   m_TagString: Untagged
@@ -3988,6 +3989,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0293f276876b7734ab5785a6696f514b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  q: 0
+  w: 0
+  e: 0
+  r: 0
+  d: 0
+  f: 0
   layerUnit:
     serializedVersion: 2
     m_Bits: 64
@@ -3996,6 +4003,48 @@ MonoBehaviour:
     m_Bits: 8
   inputMode: 0
   clickParticle: {fileID: 449126891}
+--- !u!114 &1129249160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129249156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b0712e7dd4a61a419a189aacf0a94dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  q_icon: {fileID: 1218868863}
+  w_icon: {fileID: 1938175574}
+  e_icon: {fileID: 1403762571}
+  r_icon: {fileID: 1937067331}
+  d_icon: {fileID: 1829947024}
+  f_icon: {fileID: 1380490303}
+  q_blue: {fileID: 86924855}
+  w_blue: {fileID: 852084347}
+  e_blue: {fileID: 951154990}
+  r_blue: {fileID: 1686037988}
+  d_blue: {fileID: 85409526}
+  f_blue: {fileID: 989825172}
+  q_cooltime: {fileID: 1145939742}
+  w_cooltime: {fileID: 1514133301}
+  e_cooltime: {fileID: 1049352233}
+  r_cooltime: {fileID: 993638390}
+  d_cooltime: {fileID: 775941205}
+  f_cooltime: {fileID: 152328060}
+  q_skill: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  w_skill: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  e_skill: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  r_skill: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  d_skill: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  f_skill: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  qKey: 0
+  wKey: 0
+  eKey: 0
+  rKey: 0
+  dKey: 0
+  fKey: 0
 --- !u!1 &1139634214
 GameObject:
   m_ObjectHideFlags: 0
@@ -6571,7 +6620,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1894894471
 Transform:
   m_ObjectHideFlags: 0
@@ -8940,6 +8989,12 @@ MonoBehaviour:
   reviveTime: 0
   isAlive: 0
   isStopT: 0
+  skillQ: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  skillW: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  skillE: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  skillR: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  skillD: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  skillF: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
 --- !u!4 &2630083548713410001
 Transform:
   m_ObjectHideFlags: 0
