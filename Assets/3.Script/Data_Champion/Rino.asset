@@ -22,3 +22,9 @@ MonoBehaviour:
   atk: 55
   atkRange: 7.5
   atkSpeed: 0.625
+  skillQ: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
+  skillW: {fileID: 0}
+  skillE: {fileID: 0}
+  skillR: {fileID: 0}
+  skillD: {fileID: 0}
+  skillF: {fileID: 0}

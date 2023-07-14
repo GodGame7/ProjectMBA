@@ -37,7 +37,7 @@ public class InputSystem : MonoBehaviour
     }
     private void Start()
     {
-        indicator = cm.receiver.GetComponentInChildren<Indicator>();
+        //todo indicator = cm.receiver.GetComponentInChildren<Indicator>();
     }
     private void Update()
     {
@@ -131,6 +131,7 @@ public class InputSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
         {
             //todo 커서 이미지 변경 등 Indicator 설정, GameManager 로그 시스템에 "목표를 지정해주세요" 설정
+            GameManager.Instance.CursorTexture(1);
             inputMode = 1;
         }
     }
@@ -140,6 +141,13 @@ public class InputSystem : MonoBehaviour
         { 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
+                GameManager.Instance.CursorTexture(0);
+                inputMode = 0;
+                return;
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                GameManager.Instance.CursorTexture(0);
                 inputMode = 0;
                 return;
             }
@@ -171,6 +179,7 @@ public class InputSystem : MonoBehaviour
                 else if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerGround))
                 {
                     Vector3 t_pos = hit.point;
+                    GameManager.Instance.CursorTexture(0);
                     inputMode = 0;
                     ClickParticlePlay(hit.point);
                     cm.AddCommand(new AttackCommand(cm.receiver, t_pos));
@@ -180,14 +189,23 @@ public class InputSystem : MonoBehaviour
     }
     public void SkillInputMode()
     {
+        //타게팅입력모드 index = 2
         if (inputMode == 2)
         {
-            //타게팅입력모드
+            //cancle 메소드
             if (Input.GetKeyDown(KeyCode.Escape))
             {
+                GameManager.Instance.CursorTexture(0);
                 inputMode = 0;
                 return;
             }
+            if (Input.GetMouseButtonDown(1))
+            {
+                GameManager.Instance.CursorTexture(0);
+                inputMode = 0;
+                return;
+            }
+            //좌클릭 입력 시 스킬 발동
             if (Input.GetMouseButtonDown(0))
             {
                 RaycastHit hit;
@@ -225,91 +243,6 @@ public class InputSystem : MonoBehaviour
         }
     }
 
-
-
-    #region 스킬키입력체크
-    void InputSkillKey()
-    {
-        if (Input.GetKeyDown(q))
-        {
-            if (sm.isSkillReady(q))
-            {
-                switch (sm.q_skill.inputType)
-                {
-                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.q_skill)); break;
-                    case InputType.Target: inputMode = 2; cur_skill = sm.q_skill; break;
-                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.q_skill; break;
-                }
-            }
-        }
-
-        if (Input.GetKeyDown(w))
-        {
-            if (sm.isSkillReady(w))
-            {
-                switch (sm.w_skill.inputType)
-                {
-                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.w_skill)); break;
-                    case InputType.Target: inputMode = 2; cur_skill = sm.w_skill; break;
-                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.w_skill; break;
-                }
-            }
-        }
-
-        if (Input.GetKeyDown(e))
-        {
-            if (sm.isSkillReady(e))
-            {
-                switch (sm.e_skill.inputType)
-                {
-                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.e_skill)); break;
-                    case InputType.Target: inputMode = 2; cur_skill = sm.e_skill; break;
-                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.e_skill; break;
-                }
-            }
-        }
-
-        if (Input.GetKeyDown(r)
-        {
-            if (sm.isSkillReady(r))
-            {
-                switch (sm.r_skill.inputType)
-                {
-                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.r_skill)); break;
-                    case InputType.Target: inputMode = 2; cur_skill = sm.r_skill; break;
-                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.r_skill; break;
-                }
-            }
-        }
-
-        if (Input.GetKeyDown(d))
-        {
-            if (sm.isSkillReady(d))
-            {
-                switch (sm.d_skill.inputType)
-                {
-                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.d_skill)); break;
-                    case InputType.Target: inputMode = 2; cur_skill = sm.d_skill; break;
-                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.d_skill; break;
-                }
-            }
-        }
-
-
-        if (Input.GetKeyDown(f))
-        {
-            if (sm.isSkillReady(f))
-            {
-                switch (sm.f_skill.inputType)
-                {
-                    case InputType.Instant: cm.AddCommand(new SkillCommand(cm.receiver, sm.f_skill)); break;
-                    case InputType.Target: inputMode = 2; cur_skill = sm.f_skill; break;
-                    case InputType.NonTarget: inputMode = 3; cur_skill = sm.f_skill; break;
-                }
-            }
-        }
-    }
-    #endregion
 
 }
 

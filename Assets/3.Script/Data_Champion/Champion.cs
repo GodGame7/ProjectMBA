@@ -19,4 +19,12 @@ public class Champion : ScriptableObject
     public float atk;
     public float atkRange;
     public float atkSpeed;
+    [Header("½ºÅ³")]
+    public Skill skillQ;
+    public Skill skillW;
+    public Skill skillE;
+    public Skill skillR;
+    public Skill skillD;
+    public Skill skillF;
+
 }

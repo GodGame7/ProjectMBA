@@ -57,7 +57,9 @@ public class Unit : MonoBehaviour
     public Skill skillR;
     public Skill skillD;
     public Skill skillF;
-
+    [Space]
+    [Header("Shot Position")]
+    public Transform shotPos;
     void InitState()
     {
         state_idle = new IdleState(this);
@@ -127,6 +129,14 @@ public class Unit : MonoBehaviour
             SetState(state_die);
         }
     }
+    public void OnStun(Unit attackUnit, float duration)
+    {
+        Debug.Log($"{attackUnit}에 의해 {myUnit}이 Stun! 지속 시간 : {duration}");
+    }
+    public void OnKnockBack(Unit attackUnit, float duration, float distance)
+    {
+
+    }
     public void Death()
     {
         isAlive = false;
@@ -149,7 +159,6 @@ public class Unit : MonoBehaviour
         //todo : myUnit일 경우 카메라나 컨트롤러와 연동해야해요.
         cam.InitPlayer(this);
         FindObjectOfType<CommandMachine>().Init(this);
-        FindObjectOfType<SkillMachine>().Init(this);
     }
     public void Init_status()
     {

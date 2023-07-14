@@ -301,34 +301,39 @@ public class SkillState : IState
     StateInSkill state = StateInSkill.None;
     float activateTime;
 
-    public SkillState(Skill skill, Unit user)
+    public SkillState(Unit user)
+    {
+        myUnit = user;
+    }
+    public void Init(Skill skill)
     {
         this.skill = skill;
-        this.myUnit = user;
         t_unit = null;
         t_pos = myUnit.transform.position;
     }
-    public SkillState(Skill skill, Unit user, Unit t_unit)
+    public void Init(Skill skill, Unit t_unit)
     {
-        this.myUnit = user;
+        this.skill = skill;
         this.t_unit = t_unit;
         t_pos = t_unit.transform.position;
     }
-    public SkillState(Skill skill, Unit user, Vector3 t_pos)
+    public void Init(Skill skill, Vector3 t_pos)
     {
-        this.myUnit = user;
+        this.skill = skill;
         t_unit = null;
         this.t_pos = t_pos;
     }
+
     public void Enter()
     {
-        activateTime = skill.activateTime;
+        activateTime = skill.activateTime[skill.level];
         skill.Init(myUnit);
         ActivateSkill();
     }
     public void Exit()
     {
         state = StateInSkill.None;
+        skill = null;
         t_unit = null;
         if(myUnit.isAlive) myUnit.SetState(myUnit.state_idle);
     }
@@ -351,7 +356,7 @@ public class SkillState : IState
             {
                 case StateInSkill.None: break;
                 case StateInSkill.Activated:
-                    if (activateTime < skill.activateTime)
+                    if (activateTime < skill.activateTime[skill.level])
                     {
                         activateTime += Time.deltaTime;
                     }
@@ -388,10 +393,6 @@ public class SkillState : IState
                 case OutputType.AoE: skill.Execute(t_pos); state = StateInSkill.Executed; state = StateInSkill.Executed; break;
             }
         }
-    }
-    void ExitSkill()
-    {
-
     }
 
 

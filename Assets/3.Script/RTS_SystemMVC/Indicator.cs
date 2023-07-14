@@ -52,17 +52,17 @@ public class Indicator : MonoBehaviour
         {
             if (skill.outputType == OutputType.AoE)
             {
-                OnRangeCircle(); range = skill.range; rangeCircle.transform.localScale = new Vector2(range*2, range*2);
-                OnAreaCircle(); area = skill.area; areaCircle.transform.localScale = new Vector2(area*2, area*2);
+                OnRangeCircle(); range = skill.range[skill.level]; rangeCircle.transform.localScale = new Vector2(range*2, range*2);
+                OnAreaCircle(); area = skill.area[skill.level]; areaCircle.transform.localScale = new Vector2(area*2, area*2);
             }
             else
             {
-                OnLine(); area = skill.area;  range = skill.range; line.transform.localScale = new Vector2(area, range);
+                OnLine(); area = skill.area[skill.level];  range = skill.range[skill.level]; line.transform.localScale = new Vector2(area, range);
             }
         }       
         else if (skill.inputType == InputType.Target)
         {
-            OnRangeCircle(); range = skill.range;
+            OnRangeCircle(); range = skill.range[skill.level];
         }
     }   
     public void OffIndicator()

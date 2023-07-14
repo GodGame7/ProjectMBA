@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 152f1462f2a7573479abbf92c10db68a, type: 3}
+  m_Name: Stun
+  m_EditorClassIdentifier: 
+  inputType: 1
+  outputType: 1
+  targetType: 2
+  skillName: Stun
+  icon: {fileID: 21300002, guid: 2b754f029f0d34f78a6cbf531730c5df, type: 3}
+  dmgs:
+  - 100
+  level: 1
+  maxLv: 1
+  cooldownTime:
+  - 17
+  activateTime:
+  - 0
+  durationTime:
+  - 0
+  range:
+  - 5
+  area:
+  - 0
+  ccType: 1
+  ccDurationTime: 1
+  afxs: []
+  stone: {fileID: 1728965469081888123, guid: 17d33913c936a9a42b655c4989288048, type: 3}

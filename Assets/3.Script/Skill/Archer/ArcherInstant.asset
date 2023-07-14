@@ -17,14 +17,40 @@ MonoBehaviour:
   targetType: 0
   skillName: MirrageDash
   icon: {fileID: 21300000, guid: 5debbc28d89b394498cef1e1629ad650, type: 3}
-  dmgs: []
+  dmgs:
+  - 100
   level: 1
   maxLv: 5
-  cooldownTime: 7
-  activateTime: 0
-  durationTime: 12
-  range: 0
-  area: 0
+  cooldownTime:
+  - 7
+  - 7
+  - 7
+  - 7
+  - 7
+  activateTime:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  durationTime:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  range:
+  - 10
+  - 10
+  - 10
+  - 10
+  - 10
+  area:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   ccType: 0
   ccDurationTime: 0
   afxs:
