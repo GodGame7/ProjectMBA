@@ -16,12 +16,19 @@ public class SkillMachine : MonoBehaviour
         public StateSkill state = StateSkill.ready;
         public float cooltime;
     }
-    Unit myUnit;   
-    [Space]
+    Unit myUnit;
+    [Header("My Unit에서 풀링")]
     [Header("My Skill View")]
     public Skill[] skills;
+    [Header("Bottom UI 스킬 슬롯 설정")]
     public SkillSlot[] skillSlots;
     #endregion
+
+    private void Start()
+    {
+        myUnit = GetComponent<Unit>();
+        Init(myUnit);
+    }
 
     private void Update()
     {
@@ -83,7 +90,7 @@ public class SkillMachine : MonoBehaviour
             {
                 skillSlots[i].cooltime -= Time.deltaTime;
                 skillSlots[i].cooltimeText.text = skillSlots[i].cooltime.ToString("F1");
-                skillSlots[i].cooltimeImage.fillAmount = skillSlots[i].cooltime / skills[i].cooldownTime[skills[i].level];
+                skillSlots[i].cooltimeImage.fillAmount = skillSlots[i].cooltime / skills[i].cooldownTime[skills[i].level-1];
                 if (skillSlots[i].cooltime <= 0.01f)
                 {
                     skillSlots[i].cooltime = 0;

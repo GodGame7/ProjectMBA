@@ -22,9 +22,9 @@ MonoBehaviour:
   level: 1
   maxLv: 1
   cooldownTime:
-  - 17
+  - 7
   activateTime:
-  - 0
+  - 0.1
   durationTime:
   - 0
   range:
@@ -32,6 +32,6 @@ MonoBehaviour:
   area:
   - 0
   ccType: 1
-  ccDurationTime: 1
+  ccDurationTime: 2
   afxs: []
   stone: {fileID: 1728965469081888123, guid: 17d33913c936a9a42b655c4989288048, type: 3}

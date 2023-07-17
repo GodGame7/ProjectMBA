@@ -20,13 +20,13 @@ public class ArcherArrow : MonoBehaviour
         {
             t_pos = t_unit.transform.position;
             m_pos = transform.position;
+            m_pos.y = t_pos.y;
             dir = t_pos - m_pos;
-            dir.y = 0f;
             dir = dir.normalized;
             transform.Translate(dir * speed * Time.deltaTime, Space.World) ;
             transform.rotation = Quaternion.LookRotation(dir);
 
-            float distance = Vector3.Distance(transform.position, t_pos);
+            float distance = Vector3.Distance(m_pos, t_pos);
             if (distance <= hitDistance)
             {
                 if (!ishitted) { ishitted = true; t_unit.OnDamage(m_unit, dmg); }

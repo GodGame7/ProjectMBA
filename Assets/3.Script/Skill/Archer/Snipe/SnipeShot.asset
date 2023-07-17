@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75d1dfa2046f91f44b009cf4b2858d06, type: 3}
+  m_Name: SnipeShot
+  m_EditorClassIdentifier: 
+  inputType: 1
+  outputType: 1
+  targetType: 2
+  skillName: SnipeShot
+  icon: {fileID: 21300040, guid: f10926769fcff49759be2bca48ab00b1, type: 3}
+  dmgs:
+  - 500
+  - 650
+  - 800
+  - 950
+  - 1100
+  level: 1
+  maxLv: 5
+  cooldownTime:
+  - 2
+  - 34
+  - 34
+  - 34
+  - 34
+  activateTime:
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  durationTime:
+  - 0.5
+  - 0.5
+  - 0.5
+  - 0.5
+  - 0.5
+  range:
+  - 22
+  - 22
+  - 22
+  - 22
+  - 22
+  area:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  ccType: 1
+  ccDurationTime: 2
+  afxs: []
+  arrow_snipe: {fileID: 6228355665157783782, guid: 4eb8d2fd7a9c9834daac83f43a56a215, type: 3}
+  snipeEffect: {fileID: 9123371093333321098, guid: 3509c0ec054f34c4ea7ddbd0eba7ffd9, type: 3}
+  speed: 10

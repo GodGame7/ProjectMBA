@@ -74,8 +74,7 @@ public class View : MonoBehaviour
     {
         //todo : myUnit일 경우 카메라나 컨트롤러와 연동해야해요.
         cam.InitPlayer(unit);
-        FindObjectOfType<CommandMachine>().Init(unit);
-        FindObjectOfType<SkillMachine>().Init(unit);
+        FindObjectOfType<InputSystem>().Init(unit);
     }
 
     #region MyUI

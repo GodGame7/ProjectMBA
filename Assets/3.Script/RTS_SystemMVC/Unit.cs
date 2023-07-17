@@ -39,8 +39,9 @@ public class Unit : MonoBehaviour
     [Header("죽음 상태 변수")]
     public float reviveTime;
     public bool isAlive;
-    public bool isStopT = false;
-    public bool canReceive() { if (cur_state == state_die || isStopT) return false; else return true; }
+    public bool isStun { get { return StunTimer > 0; } }
+    public float StunTimer;
+    public bool canReceive() { if (cur_state == state_die || cur_state == state_perform || isStun) return false; else return true; }
     //todo 명령을 수행 가능 여부 판단 메소드 필요.
     public IState cur_state;
     [Space]
@@ -49,7 +50,8 @@ public class Unit : MonoBehaviour
     public AttackState state_attack;
     public MoveState state_move;
     public DieState state_die;
-
+    public SkillState state_skill;
+    public PerformState state_perform;
     [Header("SkillSet")]
     public Skill skillQ;
     public Skill skillW;
@@ -60,12 +62,15 @@ public class Unit : MonoBehaviour
     [Space]
     [Header("Shot Position")]
     public Transform shotPos;
+    public SkillMachine sm;
+    public CommandMachine cm;
     void InitState()
     {
         state_idle = new IdleState(this);
         state_attack = new AttackState(this);
         state_move = new MoveState(this);
         state_die = new DieState(this);
+        state_skill = new SkillState(this);        
         cur_state = state_idle;
     }
     #region Unity CallBack Method
@@ -74,6 +79,8 @@ public class Unit : MonoBehaviour
         cam = FindObjectOfType<RTS_Cam.RTS_Camera>();
         anim = GetComponent<Animator>();
         navAgent = GetComponent<NavMeshAgent>();
+        sm = GetComponent<SkillMachine>();
+        cm = GetComponent<CommandMachine>();
     }
     private void Start()
     {
@@ -85,6 +92,11 @@ public class Unit : MonoBehaviour
     {
         cur_state.Update();
         if(currentAttackCoolTime <= attackCoolTime) currentAttackCoolTime += Time.deltaTime;
+        if (StunTimer > 0)
+        {
+            StunTimer -= Time.deltaTime;
+            if (StunTimer <= 0.01f) { StunTimer = 0; if(isAlive) anim.Play("Idle"); }
+        }
     }
     private void FixedUpdate()
     {
@@ -116,6 +128,11 @@ public class Unit : MonoBehaviour
     {
         navAgent.SetDestination(t_pos);
     }
+    public void Blink(Vector3 t_pos)
+    {
+        transform.position = t_pos;
+        navAgent.nextPosition = t_pos;
+    }
     public void OnDamage(Unit attackUnit, float dmg)
     {
         if (isAlive) { curHp -= dmg; }
@@ -131,7 +148,13 @@ public class Unit : MonoBehaviour
     }
     public void OnStun(Unit attackUnit, float duration)
     {
-        Debug.Log($"{attackUnit}에 의해 {myUnit}이 Stun! 지속 시간 : {duration}");
+        if (isAlive)
+        {
+            Debug.Log($"{attackUnit}에 의해 {myUnit}이 Stun! 지속 시간 : {duration}");
+            if(StunTimer < duration) { StunTimer = duration; }            
+            if(cur_state != state_idle) SetState(state_idle);
+            anim.Play("Stun");
+        }
     }
     public void OnKnockBack(Unit attackUnit, float duration, float distance)
     {
@@ -158,7 +181,6 @@ public class Unit : MonoBehaviour
     {
         //todo : myUnit일 경우 카메라나 컨트롤러와 연동해야해요.
         cam.InitPlayer(this);
-        FindObjectOfType<CommandMachine>().Init(this);
     }
     public void Init_status()
     {

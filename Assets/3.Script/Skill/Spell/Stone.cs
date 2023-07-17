@@ -5,8 +5,8 @@ using UnityEngine;
 public class Stone : MonoBehaviour
 {
     Unit m_unit;
-    Unit t_unit;
-    float dmg;
+    [SerializeField] Unit t_unit;
+    [SerializeField] float dmg;
     float duration = 1f;
     float speed = 10f;
     float hitDistance = 1f;
@@ -14,24 +14,23 @@ public class Stone : MonoBehaviour
     Vector3 m_pos;
     Vector3 dir;
     bool ishitted = false;
-
+    [SerializeField] float distance;
     void Update()
     {
         if (t_unit != null)
         {
             t_pos = t_unit.transform.position;
             m_pos = transform.position;
+            m_pos.y = t_unit.transform.position.y;
             dir = t_pos - m_pos;
-            dir.y = 0f;
             dir = dir.normalized;
             transform.Translate(dir * speed * Time.deltaTime, Space.World);
-            transform.rotation = Quaternion.LookRotation(dir);
 
-            float distance = Vector3.Distance(transform.position, t_pos);
+            distance = Vector3.Distance(m_pos, t_pos);
             if (distance <= hitDistance)
             {
                 if (!ishitted) { ishitted = true; t_unit.OnDamage(m_unit, dmg); t_unit.OnStun(m_unit, duration); }
-                Destroy(gameObject, 1f);
+                Destroy(gameObject);
             }
         }
         else if (t_unit == null)
@@ -40,9 +39,8 @@ public class Stone : MonoBehaviour
             dir.y = 0f;
             dir = dir.normalized;
             transform.Translate(dir * speed * Time.deltaTime, Space.World);
-            transform.rotation = Quaternion.LookRotation(dir);
 
-            float distance = Vector3.Distance(transform.position, t_pos);
+            distance = Vector3.Distance(transform.position, t_pos);
             if (distance <= hitDistance)
             {
                 Destroy(gameObject, 1f);
@@ -53,7 +51,7 @@ public class Stone : MonoBehaviour
     {
         m_unit = user;
         t_unit = target;
-        this.dmg = skillinfo.dmgs[skillinfo.level];
+        this.dmg = skillinfo.dmgs[skillinfo.level-1];
         duration = skillinfo.ccDurationTime;
     }
 }

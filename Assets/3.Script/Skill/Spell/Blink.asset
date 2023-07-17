@@ -22,9 +22,9 @@ MonoBehaviour:
   level: 1
   maxLv: 1
   cooldownTime:
-  - 1
+  - 2
   activateTime:
-  - 0
+  - 0.01
   durationTime:
   - 0
   range:

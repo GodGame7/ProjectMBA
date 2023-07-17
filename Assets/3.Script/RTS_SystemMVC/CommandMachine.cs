@@ -6,9 +6,10 @@ public class CommandMachine : MonoBehaviour
 {
     public Unit receiver;
     Queue<ICommand> commandQueue = new Queue<ICommand>();
-    public void Init(Unit myUnit)
+
+    private void Start()
     {
-        receiver = myUnit;
+        receiver = GetComponent<Unit>();
     }
 
     private void Update()

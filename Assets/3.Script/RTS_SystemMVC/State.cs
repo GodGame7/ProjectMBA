@@ -42,7 +42,7 @@ public class IdleState : IState
     {
         if (Search())
         {
-            if (targetUnit != null) { myUnit.state_attack.Init(targetUnit, 0); myUnit.SetState(myUnit.state_attack); }
+            if (targetUnit != null) { myUnit.cm.AddCommand(new AttackCommand(myUnit, targetUnit)); }
             else Debug.Log("Idle state searched target but targetUnit is null, IDK why doesn't");
         }
     }
@@ -300,42 +300,49 @@ public class SkillState : IState
     #endregion
     StateInSkill state = StateInSkill.None;
     float activateTime;
-
+    int index;
     public SkillState(Unit user)
     {
         myUnit = user;
     }
-    public void Init(Skill skill)
+    public void Init(Skill skill, int index)
     {
         this.skill = skill;
         t_unit = null;
         t_pos = myUnit.transform.position;
+        this.index = index;
+        activateTime = skill.activateTime[skill.level - 1];
+        this.skill.Init(myUnit);
     }
-    public void Init(Skill skill, Unit t_unit)
+    public void Init(Skill skill, int index, Unit t_unit)
     {
         this.skill = skill;
         this.t_unit = t_unit;
         t_pos = t_unit.transform.position;
+        this.index = index;
+        activateTime = skill.activateTime[skill.level - 1];
+        this.skill.Init(myUnit);
     }
-    public void Init(Skill skill, Vector3 t_pos)
+    public void Init(Skill skill, int index, Vector3 t_pos)
     {
         this.skill = skill;
         t_unit = null;
         this.t_pos = t_pos;
+        this.index = index;
+        activateTime = skill.activateTime[skill.level - 1];
+        this.skill.Init(myUnit);
     }
 
     public void Enter()
     {
-        activateTime = skill.activateTime[skill.level];
-        skill.Init(myUnit);
+        myUnit.anim.Play("Wait");
         ActivateSkill();
     }
     public void Exit()
     {
         state = StateInSkill.None;
         skill = null;
-        t_unit = null;
-        if(myUnit.isAlive) myUnit.SetState(myUnit.state_idle);
+        t_unit = null;        
     }
 
     public void FixedUpdate()
@@ -356,20 +363,27 @@ public class SkillState : IState
             {
                 case StateInSkill.None: break;
                 case StateInSkill.Activated:
-                    if (activateTime < skill.activateTime[skill.level])
+                    if (activateTime > 0)
                     {
-                        activateTime += Time.deltaTime;
+                        Rotate();
+                        activateTime -= Time.deltaTime;
+                        if (activateTime <= 0.01f)
+                        {
+                            activateTime = 0f;
+                            ExecuteSkill();
+                        }
                     }
-                    else
-                    {
-                        ExecuteSkill();
-                    }
-                    break;
-                case StateInSkill.Executed: Exit(); break;
+                    break; 
+                case StateInSkill.Executed: if (myUnit.isAlive) { myUnit.SetState(myUnit.state_idle); } break;
             }
         }
     }
 
+    void Rotate()
+    {
+        Quaternion targetRotation = Quaternion.LookRotation(t_pos - myUnit.transform.position);
+        myUnit.transform.rotation = Quaternion.Slerp(myUnit.transform.rotation, targetRotation, 10f * Time.deltaTime / activateTime);
+    }
     void ActivateSkill()
     {
         if (skill != null)
@@ -386,16 +400,37 @@ public class SkillState : IState
     {
         if (skill != null)
         {
-            switch (skill.outputType)
+            switch (skill.inputType)
             {
-                case OutputType.None: skill.Execute(); state = StateInSkill.Executed; state = StateInSkill.Executed; break;
-                case OutputType.Target: skill.Execute(t_unit); state = StateInSkill.Executed; state = StateInSkill.Executed; break;
-                case OutputType.AoE: skill.Execute(t_pos); state = StateInSkill.Executed; state = StateInSkill.Executed; break;
+                case InputType.Instant: skill.Execute(); state = StateInSkill.Executed; myUnit.sm.SkillUsed(index); break;
+                case InputType.Target: skill.Execute(t_unit); state = StateInSkill.Executed; myUnit.sm.SkillUsed(index); break;
+                case InputType.NonTarget: skill.Execute(t_pos); state = StateInSkill.Executed; myUnit.sm.SkillUsed(index); break;
             }
         }
     }
 
 
 }
-//todo
 
+
+//스킬 시전 중에 캐릭터를 조작하지 못하도록 하기 위한 State
+//스킬 Execute()문에서 접근해야 함
+public class PerformState : IState
+{
+    public void Enter()
+    {
+    }
+    public void Exit()
+    {
+    }
+    public void FixedUpdate()
+    {
+    }
+    public void LateUpdate()
+    {
+    }
+    public void Update()
+    {
+    }
+}
+//todo

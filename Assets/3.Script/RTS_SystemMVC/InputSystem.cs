@@ -13,15 +13,17 @@ public class InputSystem : MonoBehaviour
     public KeyCode r;
     public KeyCode d;
     public KeyCode f;
+    Unit myUnit;
     [Header("레이어 세팅")]
     [SerializeField] LayerMask layerUnit;
     [SerializeField] LayerMask layerGround;
     CommandMachine cm;
     [Tooltip("InputMode   0 = Idle / 1 = Targetting ")]
-    public int inputMode = 0; // 0 = Idle, 1 = Attack, 2 = Skill
+    public int inputMode = 0; // 0 = Idle, 1 = Attack, 2 = SkillTarget, 3 = NonTarget
     [Header("스킬")]
     SkillMachine sm;
     Skill cur_skill;
+    int cur_skillIndex;
     Indicator indicator;
     [Header("View 연동")]
     View view;
@@ -31,9 +33,13 @@ public class InputSystem : MonoBehaviour
     private void Awake()
     {
         mainCamera = Camera.main;
-        sm = FindObjectOfType<SkillMachine>();
-        cm = FindObjectOfType<CommandMachine>();
         view = FindObjectOfType<View>();
+    }
+    public void Init(Unit myUnit)
+    {
+        this.myUnit = myUnit;
+        sm = myUnit.sm;
+        cm = myUnit.cm;
     }
     private void Start()
     {
@@ -46,6 +52,9 @@ public class InputSystem : MonoBehaviour
         OnAttackButton();
         AttackInputMode();
         StopInput();
+        SkillKeyInput();
+        TargetInputMode();
+        NonTargetInputMode();
         if(particleTime < 1f) particleTime += Time.deltaTime;
     }
 
@@ -68,7 +77,6 @@ public class InputSystem : MonoBehaviour
                 Debug.Log("UI Move is Locked!");
                 return;
             }
-            // 이동 메서드
             RaycastHit hit;
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerGround))
@@ -125,16 +133,6 @@ public class InputSystem : MonoBehaviour
         return isUIHit;
     }
     #endregion
-
-    private void OnAttackButton()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            //todo 커서 이미지 변경 등 Indicator 설정, GameManager 로그 시스템에 "목표를 지정해주세요" 설정
-            GameManager.Instance.CursorTexture(1);
-            inputMode = 1;
-        }
-    }
     public void AttackInputMode()
     {
         if (inputMode == 1)
@@ -187,7 +185,7 @@ public class InputSystem : MonoBehaviour
             }
         }
     }
-    public void SkillInputMode()
+    public void TargetInputMode()
     {
         //타게팅입력모드 index = 2
         if (inputMode == 2)
@@ -224,8 +222,9 @@ public class InputSystem : MonoBehaviour
                             else if (t_unit.GetTeam() != cm.receiver.GetTeam())
                             {
                                 //todo 커서 이미지 변경했던 것 등 off메소드
+                                GameManager.Instance.CursorTexture(0);
                                 inputMode = 0;
-                                cm.AddCommand(new AttackCommand(cm.receiver, t_unit));
+                                cm.AddCommand(new SkillCommand(cm.receiver, cur_skill, cur_skillIndex, t_unit));
                                 return;
                             }
                         }
@@ -235,14 +234,210 @@ public class InputSystem : MonoBehaviour
             }
         }
     }
-    public void StopInput()
+    public void NonTargetInputMode()
+    {
+        //논타게팅입력모드 index = 3
+        if (inputMode == 3)
+        {
+            //cancle 메소드
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                GameManager.Instance.CursorTexture(0);
+                inputMode = 0;
+                return;
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                GameManager.Instance.CursorTexture(0);
+                inputMode = 0;
+                return;
+            }
+            //좌클릭 입력 시 스킬 발동
+            if (Input.GetMouseButtonDown(0))
+            {
+                RaycastHit hit;
+                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerGround))
+                {
+                    GameManager.Instance.CursorTexture(0);
+                    inputMode = 0;
+                    cm.AddCommand(new SkillCommand(cm.receiver, cur_skill, cur_skillIndex, hit.point));
+                    return;
+                }
+                else { Debug.Log("유효하지 않은 목표입니다"); }
+            }
+        }
+    }
+
+
+    void StopInput()
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
             cm.AddCommand(new StopCommand(cm.receiver));
         }
     }
-
-
+    void OnAttackButton()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            //todo 커서 이미지 변경 등 Indicator 설정, GameManager 로그 시스템에 "목표를 지정해주세요" 설정
+            GameManager.Instance.CursorTexture(1);
+            inputMode = 1;
+        }
+    }
+    void SkillKeyInput()
+    {
+        if (Input.GetKeyDown(q))
+        {
+            int inputKey = 0;
+            if (!sm.isSkillReady(inputKey))
+            {
+                //todo 쿨타임일 경우 처리
+                Debug.Log("SkillState is Cooldown");
+                return;
+            }
+            switch (sm.skills[inputKey].inputType)
+            {
+                case InputType.Instant:
+                    cm.AddCommand(new SkillCommand(cm.receiver, sm.skills[inputKey], inputKey)); break;
+                case InputType.Target:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 2;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+                case InputType.NonTarget:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 3;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+            }
+        }
+        if (Input.GetKeyDown(w))
+        {
+            int inputKey = 1;
+            if (!sm.isSkillReady(inputKey))
+            {
+                //todo 쿨타임일 경우 처리
+                Debug.Log("SkillState is Cooldown");
+                return;
+            }
+            switch (sm.skills[inputKey].inputType)
+            {
+                case InputType.Instant:
+                    cm.AddCommand(new SkillCommand(cm.receiver, sm.skills[inputKey], inputKey)); break;
+                case InputType.Target:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 2;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+                case InputType.NonTarget:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 3;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+            }
+        }
+        if (Input.GetKeyDown(e))
+        {
+            int inputKey = 2;
+            if (!sm.isSkillReady(inputKey))
+            {
+                //todo 쿨타임일 경우 처리
+                Debug.Log("SkillState is Cooldown");
+                return;
+            }
+            switch (sm.skills[inputKey].inputType)
+            {
+                case InputType.Instant:
+                    cm.AddCommand(new SkillCommand(cm.receiver, sm.skills[inputKey], inputKey)); break;
+                case InputType.Target:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 2;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+                case InputType.NonTarget:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 3;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+            }
+        }
+        if (Input.GetKeyDown(r))
+        {
+            int inputKey = 3;
+            if (!sm.isSkillReady(inputKey))
+            {
+                //todo 쿨타임일 경우 처리
+                Debug.Log("SkillState is Cooldown");
+                return;
+            }
+            switch (sm.skills[inputKey].inputType)
+            {
+                case InputType.Instant:
+                    cm.AddCommand(new SkillCommand(cm.receiver, sm.skills[inputKey], inputKey)); break;
+                case InputType.Target:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 2;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+                case InputType.NonTarget:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 3;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+            }
+        }
+        if (Input.GetKeyDown(d))
+        {
+            int inputKey = 4;
+            if (!sm.isSkillReady(inputKey))
+            {
+                //todo 쿨타임일 경우 처리
+                Debug.Log("SkillState is Cooldown");
+                return;
+            }
+            switch (sm.skills[inputKey].inputType)
+            {
+                case InputType.Instant:
+                    cm.AddCommand(new SkillCommand(cm.receiver, sm.skills[inputKey], inputKey)); break;
+                case InputType.Target:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 2;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+                case InputType.NonTarget:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 3;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+            }
+        }
+        if (Input.GetKeyDown(f))
+        {
+            int inputKey = 5;
+            if (!sm.isSkillReady(inputKey))
+            {
+                //todo 쿨타임일 경우 처리
+                Debug.Log("SkillState is Cooldown");
+                return;
+            }
+            switch (sm.skills[inputKey].inputType)
+            {
+                case InputType.Instant:
+                    cm.AddCommand(new SkillCommand(cm.receiver, sm.skills[inputKey], inputKey)); break;
+                case InputType.Target:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 2;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+                case InputType.NonTarget:
+                    GameManager.Instance.CursorTexture(1);
+                    inputMode = 3;
+                    cur_skill = sm.skills[inputKey];
+                    cur_skillIndex = inputKey; break;
+            }
+        }
+    }
 }
 

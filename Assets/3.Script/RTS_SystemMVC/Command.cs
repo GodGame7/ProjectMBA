@@ -72,29 +72,45 @@ public class SkillCommand : ICommand
     Vector3 t_pos;
     Unit t_unit;
     Skill skill;
-    public SkillCommand(Unit receiver, Skill skill)
+    int index;
+    public SkillCommand(Unit receiver, Skill skill, int index)
     {
         myUnit = receiver;
         this.skill = skill;
         t_unit = null;
         t_pos = myUnit.transform.position;
+        this.index = index;
     }
-    public SkillCommand(Unit receiver, Skill skill, Vector3 t_pos)
+    public SkillCommand(Unit receiver, Skill skill, int index, Vector3 t_pos)
     {
         myUnit = receiver;
         this.skill = skill;
         this.t_pos = t_pos;
         t_unit = null;
+        this.index = index;
     }
-    public SkillCommand(Unit receiver, Skill skill, Unit t_unit)
+    public SkillCommand(Unit receiver, Skill skill, int index, Unit t_unit)
     {
         myUnit = receiver;
         this.skill = skill;
         this.t_unit = t_unit;
         t_pos = myUnit.transform.position;
+        this.index = index;
     }
     public void Execute()
     {
-                
+        ExecuteSkill();
+    }
+    void ExecuteSkill()
+    {
+        if (skill != null)
+        {
+            switch (skill.inputType)
+            {
+                case InputType.Instant: myUnit.state_skill.Init(skill, index); myUnit.SetState(myUnit.state_skill); break;
+                case InputType.Target: myUnit.state_skill.Init(skill, index, t_unit); myUnit.SetState(myUnit.state_skill); break;
+                case InputType.NonTarget: myUnit.state_skill.Init(skill, index, t_pos); myUnit.SetState(myUnit.state_skill); break;
+            }
+        }
     }
 }
