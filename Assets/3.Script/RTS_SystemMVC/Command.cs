@@ -114,3 +114,21 @@ public class SkillCommand : ICommand
         }
     }
 }
+
+public class PerformCommand : ICommand
+{
+    Unit myUnit;
+    float time;
+    Skill skill;
+    public PerformCommand(Unit receiver, float time, Skill skill)
+    {
+        myUnit = receiver;
+        this.time = time;
+        this.skill = skill;
+    }
+    public void Execute()
+    {
+        myUnit.state_perform.Init(time, skill);
+        myUnit.SetState(myUnit.state_perform);
+    }
+}

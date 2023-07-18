@@ -70,7 +70,8 @@ public class Unit : MonoBehaviour
         state_attack = new AttackState(this);
         state_move = new MoveState(this);
         state_die = new DieState(this);
-        state_skill = new SkillState(this);        
+        state_skill = new SkillState(this);
+        state_perform = new PerformState(this);
         cur_state = state_idle;
     }
     #region Unity CallBack Method
@@ -135,15 +136,17 @@ public class Unit : MonoBehaviour
     }
     public void OnDamage(Unit attackUnit, float dmg)
     {
-        if (isAlive) { curHp -= dmg; }
-        
-        if (curHp <= 0)
+        if (isAlive)
         {
-            Debug.Log($"Team : {attackUnit.team}의 {attackUnit.champName}이 Team : {this.team}의 {this.champName}을 죽였습니다.");
-            curHp = 0;
-            reviveTime = level * 5f;
-            isAlive = false;
-            SetState(state_die);
+            curHp -= dmg;
+            if (curHp <= 0)
+            {
+                Debug.Log($"Team : {attackUnit.team}의 {attackUnit.champName}이 Team : {this.team}의 {this.champName}을 죽였습니다.");
+                curHp = 0;
+                reviveTime = level * 5f;
+                isAlive = false;
+                SetState(state_die);
+            }
         }
     }
     public void OnStun(Unit attackUnit, float duration)

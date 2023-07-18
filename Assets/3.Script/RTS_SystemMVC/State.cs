@@ -332,7 +332,6 @@ public class SkillState : IState
         activateTime = skill.activateTime[skill.level - 1];
         this.skill.Init(myUnit);
     }
-
     public void Enter()
     {
         myUnit.anim.Play("Wait");
@@ -344,17 +343,14 @@ public class SkillState : IState
         skill = null;
         t_unit = null;        
     }
-
     public void FixedUpdate()
     {
       
     }
-
     public void LateUpdate()
     {
       
     }
-
     public void Update()
     {
         if (skill != null)
@@ -378,7 +374,6 @@ public class SkillState : IState
             }
         }
     }
-
     void Rotate()
     {
         Quaternion targetRotation = Quaternion.LookRotation(t_pos - myUnit.transform.position);
@@ -408,17 +403,26 @@ public class SkillState : IState
             }
         }
     }
-
-
 }
-
-
 //스킬 시전 중에 캐릭터를 조작하지 못하도록 하기 위한 State
 //스킬 Execute()문에서 접근해야 함
 public class PerformState : IState
 {
+    Unit myUnit;
+    float time;
+    Skill skill;
+    public PerformState(Unit myUnit)
+    {
+        this.myUnit = myUnit;
+    }
+    public void Init(float time, Skill skill)
+    {
+        this.time = time;
+        this.skill = skill;
+    }
     public void Enter()
     {
+        myUnit.Stop();
     }
     public void Exit()
     {
@@ -431,6 +435,17 @@ public class PerformState : IState
     }
     public void Update()
     {
+        if (time > 0)
+        {
+            time -= Time.deltaTime;
+            if (time <= 0.001f)
+            {
+                skill.Exit();
+                time = 0;
+                if(myUnit.isAlive) myUnit.SetState(myUnit.state_idle);
+                myUnit.cm.AddCommand(new StopCommand(myUnit));
+            }
+        }
     }
 }
 //todo

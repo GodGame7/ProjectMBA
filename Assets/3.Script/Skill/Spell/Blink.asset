@@ -35,3 +35,4 @@ MonoBehaviour:
   ccDurationTime: 0
   afxs:
   - {fileID: 8300000, guid: d83a5560344a83c439b8be8e69d5b7c4, type: 3}
+  flashEffect: {fileID: 2729919214645482622, guid: 438fc78bc53f4434e98a1227b7341aa7, type: 3}
