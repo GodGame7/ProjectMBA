@@ -124,6 +124,7 @@ public class AttackState : IState
     public void Exit()
     {
         isAttacking = false;
+        t_unit = null;
     }
     public void FixedUpdate()
     {
@@ -338,12 +339,11 @@ public class SkillState : IState
     }
     public void Enter()
     {
-        state = StateInSkill.None;
-        ActivateSkill();
+        state = StateInSkill.Exited;
     }
     public void Exit()
     {
-        state = StateInSkill.None;
+        state = StateInSkill.Exited;
         skill = null;
         t_unit = null;        
     }
@@ -361,6 +361,15 @@ public class SkillState : IState
         {
             switch (state)
             {
+                case StateInSkill.Exited:                    
+                    if (isInRange())
+                    {
+                        state = StateInSkill.None;
+                        ActivateSkill();
+                        return;
+                    }
+                    myUnit.MoveTo(t_pos);
+                    break;
                 case StateInSkill.None: break;
                 case StateInSkill.Activated:
                     if (activateTime > 0)
@@ -373,7 +382,7 @@ public class SkillState : IState
                             ExecuteSkill();
                         }
                     }
-                    break; 
+                    break;
                 case StateInSkill.Executed:
                     if (durationTime > 0)
                     {
@@ -386,6 +395,20 @@ public class SkillState : IState
                     else if (myUnit.isAlive) { myUnit.SetState(myUnit.state_idle); }
                     break;
             }
+        }
+    }
+    bool isInRange()
+    {
+        switch (skill.inputType)
+        {
+            case InputType.Instant: return true;
+            case InputType.Target:
+                float distance = Vector3.Distance(myUnit.transform.position, t_unit.transform.position);
+                return distance <= myUnit.range;
+            case InputType.NonTarget:
+                float distance2 = Vector3.Distance(myUnit.transform.position, t_pos);
+                return distance2 <= myUnit.range;
+            default: return false;
         }
     }
     void Rotate()
