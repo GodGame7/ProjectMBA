@@ -9,8 +9,12 @@ public class MultiShot : Skill
     public GameObject arrow_multishot;
     public float fanAngle = 30f; // 부채꼴의 각도 설정
     public float speed = 10f;
-    public override void Execute(Vector3 t_pos)
+    public override void Activate(Vector3 t_pos)
     {
+        myUnit.anim.Play("MultiShot");
+    }
+    public override void Execute(Vector3 t_pos)
+    {        
         Vector3 dir = t_pos - myUnit.transform.position;
 
         Quaternion initialRotation = Quaternion.LookRotation(dir);

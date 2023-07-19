@@ -39,9 +39,26 @@ public class CommandMachine : MonoBehaviour
     {
         if (receiver.canReceive())
         {
-            if (commandQueue.Count > 0)
+            if (receiver.cur_state == receiver.state_skill)
             {
-                commandQueue.Dequeue().Execute();
+                if (commandQueue.Count > 0)
+                {
+                    if (commandQueue.Peek() is StopCommand)
+                    {
+                        (commandQueue.Dequeue() as StopCommand)?.Execute();
+                    }
+                    else
+                    {
+                        if (commandQueue.Count > 1) commandQueue.Dequeue();
+                    }
+                }
+            }
+            else
+            {
+                if (commandQueue.Count > 0)
+                {
+                    commandQueue.Dequeue().Execute();
+                }
             }
         }
         else if (!receiver.canReceive())

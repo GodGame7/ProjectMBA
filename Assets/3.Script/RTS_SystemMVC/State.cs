@@ -19,7 +19,7 @@ public class IdleState : IState
     public IdleState(Unit myUnit)
     {
         this.myUnit = myUnit;
-        searchArea = new Vector3(myUnit.range * 1.1f, myUnit.range * 1.1f, myUnit.range * 1.1f);
+        searchArea = new Vector3(GameManager.Instance.aggroRange, GameManager.Instance.aggroRange, GameManager.Instance.aggroRange);
     }
     public void Enter()
     {
@@ -102,7 +102,7 @@ public class AttackState : IState
         this.myUnit = myUnit;
         t_unit = null;
         this.t_pos = myUnit.transform.position;
-        searchArea = new Vector3(myUnit.range*1.1f, myUnit.range * 1.1f, myUnit.range * 1.1f);
+        searchArea = new Vector3(GameManager.Instance.aggroRange, GameManager.Instance.aggroRange, GameManager.Instance.aggroRange);
         animator = myUnit.anim;
     }
     public void Init(Unit targetUnit, int index)
@@ -300,6 +300,7 @@ public class SkillState : IState
     #endregion
     StateInSkill state = StateInSkill.None;
     float activateTime;
+    float durationTime;
     int index;
     public SkillState(Unit user)
     {
@@ -312,6 +313,7 @@ public class SkillState : IState
         t_pos = myUnit.transform.position;
         this.index = index;
         activateTime = skill.activateTime[skill.level - 1];
+        durationTime = skill.durationTime[skill.level - 1];
         this.skill.Init(myUnit);
     }
     public void Init(Skill skill, int index, Unit t_unit)
@@ -321,6 +323,7 @@ public class SkillState : IState
         t_pos = t_unit.transform.position;
         this.index = index;
         activateTime = skill.activateTime[skill.level - 1];
+        durationTime = skill.durationTime[skill.level - 1];
         this.skill.Init(myUnit);
     }
     public void Init(Skill skill, int index, Vector3 t_pos)
@@ -329,12 +332,13 @@ public class SkillState : IState
         t_unit = null;
         this.t_pos = t_pos;
         this.index = index;
+        durationTime = skill.durationTime[skill.level - 1];
         activateTime = skill.activateTime[skill.level - 1];
         this.skill.Init(myUnit);
     }
     public void Enter()
     {
-        myUnit.anim.Play("Wait");
+        state = StateInSkill.None;
         ActivateSkill();
     }
     public void Exit()
@@ -370,7 +374,17 @@ public class SkillState : IState
                         }
                     }
                     break; 
-                case StateInSkill.Executed: if (myUnit.isAlive) { myUnit.SetState(myUnit.state_idle); } break;
+                case StateInSkill.Executed:
+                    if (durationTime > 0)
+                    {
+                        durationTime -= Time.deltaTime;
+                        if (durationTime <= 0.01f)
+                        {
+                            durationTime = 0f;
+                        }
+                    }
+                    else if (myUnit.isAlive) { myUnit.SetState(myUnit.state_idle); }
+                    break;
             }
         }
     }

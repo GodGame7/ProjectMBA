@@ -15,9 +15,9 @@ public class SnipeShot : Skill
     }
     public override void Execute(Unit t_unit)
     {
+        myUnit.anim.Play("Sniping_Attack");
         Vector3 dir = t_unit.transform.position - myUnit.transform.position;
-        Quaternion initialRotation = Quaternion.LookRotation(dir);
-        myUnit.anim.Play("Sniping_Out");
+        Quaternion initialRotation = Quaternion.LookRotation(dir);        
         // 중앙 화살 발사
         GameObject obj = Instantiate(arrow_snipe, myUnit.shotPos.position, initialRotation);
         GameObject effect = Instantiate(snipeEffect);

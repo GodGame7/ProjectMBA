@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a8cd89daf331c6449bb4ab2eb2e6ee7, type: 3}
-  m_Name: Rino
+  m_Name: Makoto
   m_EditorClassIdentifier: 
-  img: {fileID: 21300000, guid: 5debbc28d89b394498cef1e1629ad650, type: 3}
-  prefab: {fileID: 5128856038511819053, guid: d71e8c793bccc16428b1ba9cc4e0d312, type: 3}
-  startPos: {x: 30, y: 1, z: 30}
-  champName: Rino
-  maxHp: 1250
-  maxMp: 1000
-  moveSpeed: 225
-  atk: 55
-  atkRange: 7.5
-  atkSpeed: 0.625
+  img: {fileID: 21300000, guid: 7348ef0b4d2db1d40b80dbdd36695375, type: 3}
+  prefab: {fileID: 8997402076862884345, guid: 9683b6fdb45a0ca41937cc92ebf5a473, type: 3}
+  startPos: {x: 30, y: 0, z: 45}
+  champName: Warrior
+  maxHp: 3000
+  maxMp: 1200
+  moveSpeed: 245
+  atk: 110
+  atkRange: 1.5
+  atkSpeed: 5
   skillQ: {fileID: 11400000, guid: 99f5bd69d908ea64ca946d84583666f0, type: 2}
   skillW: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
   skillE: {fileID: 11400000, guid: 21b072deb5d227f4895aa5e4c328685d, type: 2}
-  skillR: {fileID: 11400000, guid: 29f99349507dfcd488337bacb1727d47, type: 2}
-  skillD: {fileID: 11400000, guid: 99f5bd69d908ea64ca946d84583666f0, type: 2}
+  skillR: {fileID: 11400000, guid: 153045b760a493541af90ba6229d7853, type: 2}
+  skillD: {fileID: 11400000, guid: 29f99349507dfcd488337bacb1727d47, type: 2}
   skillF: {fileID: 11400000, guid: 4c094720cc15e5a4bb092c189bd33906, type: 2}

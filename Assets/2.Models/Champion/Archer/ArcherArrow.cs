@@ -30,8 +30,7 @@ public class ArcherArrow : MonoBehaviour
             if (distance <= hitDistance)
             {
                 if (!ishitted) { ishitted = true; t_unit.OnDamage(m_unit, dmg); }
-                this.GetComponentInChildren<TrailRenderer>().enabled = false;
-                Destroy(gameObject, 1f);
+                Destroy(gameObject);
             }
         }
         else if (t_unit == null)
@@ -46,7 +45,7 @@ public class ArcherArrow : MonoBehaviour
             if (distance <= hitDistance)
             {
                this.GetComponentInChildren<TrailRenderer>().enabled = false;
-               Destroy(gameObject, 1f);
+               Destroy(gameObject);
             }
         }
     }

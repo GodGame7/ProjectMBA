@@ -18,19 +18,17 @@ public class Archer_Hiryu : Skill
         this.t_pos.y = 0f;
         m_pos = myUnit.transform.position;
         m_pos.y = 0f;
-        myUnit.transform.LookAt(t_pos);
     }
     public override void Execute(Vector3 t_pos)
     {
         myUnit.cm.AddCommand(new PerformCommand(myUnit, 3f, this));
-        myUnit.anim.Play("Sniping_In");
+        myUnit.anim.Play("Hiryu");
         obj = Instantiate(magicCircle, myUnit.transform);
         GameManager.Instance.PlayAFX(afxs[0]);       
     }
     public override void Exit()
     {
         Destroy(obj);
-        myUnit.anim.Play("Sniping_Out");
         GameManager.Instance.PlayAFX(afxs[1]);
         GameObject hiryu =
             Instantiate(hiryuEffect, myUnit.shotPos.position, Quaternion.LookRotation(t_pos - m_pos));

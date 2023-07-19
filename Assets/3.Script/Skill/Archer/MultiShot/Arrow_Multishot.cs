@@ -24,7 +24,6 @@ public class Arrow_Multishot : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("ºÎµúÇû´Ù");
         if (hitTargets.Contains(other.gameObject))
         {
             return;

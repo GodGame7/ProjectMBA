@@ -167,6 +167,7 @@ public class InputSystem : MonoBehaviour
                             else if (t_unit.GetTeam() != cm.receiver.GetTeam())
                             {
                                 //todo 커서 이미지 변경했던 것 등 off메소드
+                                GameManager.Instance.CursorTexture(0);
                                 inputMode = 0;
                                 cm.AddCommand(new AttackCommand(cm.receiver, t_unit));
                                 return;

@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     int count = 0;
     public float x;
     public float y;
+    public float aggroRange;
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
