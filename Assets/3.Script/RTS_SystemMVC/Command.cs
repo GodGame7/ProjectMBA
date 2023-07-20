@@ -107,9 +107,9 @@ public class SkillCommand : ICommand
         {
             switch (skill.inputType)
             {
-                case InputType.Instant: myUnit.state_skill.Init(skill, index); myUnit.SetState(myUnit.state_skill); break;
-                case InputType.Target: myUnit.state_skill.Init(skill, index, t_unit); myUnit.SetState(myUnit.state_skill); break;
-                case InputType.NonTarget: myUnit.state_skill.Init(skill, index, t_pos); myUnit.SetState(myUnit.state_skill); break;
+                case InputType.Instant: myUnit.state_skillmove.Init(skill, index); myUnit.SetState(myUnit.state_skillmove); break;
+                case InputType.Target: myUnit.state_skillmove.Init(skill, index, t_unit); myUnit.SetState(myUnit.state_skillmove); break;
+                case InputType.NonTarget: myUnit.state_skillmove.Init(skill, index, t_pos); myUnit.SetState(myUnit.state_skillmove); break;
             }
         }
     }

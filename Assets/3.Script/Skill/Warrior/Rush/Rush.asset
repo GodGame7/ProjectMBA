@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c1914c32fa30324d9d5fb00584777c6, type: 3}
+  m_Name: Rush
+  m_EditorClassIdentifier: 
+  inputType: 1
+  outputType: 1
+  targetType: 2
+  skillName: Rush
+  icon: {fileID: 21300000, guid: 7ddd8df79bb31ea41aca2f293ad923af, type: 3}
+  dmgs:
+  - 100
+  - 180
+  - 260
+  - 340
+  - 420
+  level: 1
+  maxLv: 5
+  cooldownTime:
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  activateTime:
+  - 0.1
+  - 0.1
+  - 0.1
+  - 0.1
+  - 0.1
+  durationTime:
+  - 0.1
+  - 0.1
+  - 0.1
+  - 0.1
+  - 0.1
+  range:
+  - 7.5
+  - 7.5
+  - 7.5
+  - 7.5
+  - 7.5
+  area:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  ccType: 1
+  ccDurationTime: 0.5
+  afxs:
+  - {fileID: 8300000, guid: 1b27ebc30fa39bc428a7dac21daa37bf, type: 3}
+  rushSpeed: 0.3

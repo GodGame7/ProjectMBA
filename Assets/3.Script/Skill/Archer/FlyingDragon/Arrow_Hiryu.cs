@@ -11,6 +11,7 @@ public class Arrow_Hiryu : MonoBehaviour
     Vector3 startPos;
     List<GameObject> hitTargets = new List<GameObject>();
     [SerializeField] GameObject hitParticle;
+    [SerializeField] GameObject hiryu;
 
     private void Update()
     {
@@ -21,8 +22,9 @@ public class Arrow_Hiryu : MonoBehaviour
             if (distance >= range)
             {
                 hitTargets.Clear();
-                gameObject.SetActive(false);
-                Destroy(gameObject, 2f);
+                hiryu.SetActive(false);
+                this.GetComponent<BoxCollider>().enabled = false;
+                Destroy(gameObject, 3f);
             }
         }
     }
@@ -55,7 +57,7 @@ public class Arrow_Hiryu : MonoBehaviour
         {
             GameObject a = Instantiate(hitParticle, position, Quaternion.identity);
             yield return new WaitForSeconds(1f);
-            Destroy(a, 0.1f);
+            Destroy(a);
         }
     }
     

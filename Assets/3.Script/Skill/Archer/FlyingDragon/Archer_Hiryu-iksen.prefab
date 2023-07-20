@@ -281,6 +281,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitParticle: {fileID: 1004758301448345758, guid: eace80757a7779c409b5b30f7ec93a87, type: 3}
+  hiryu: {fileID: 4403621948070108553}
 --- !u!1 &6872409565648804719
 GameObject:
   m_ObjectHideFlags: 0

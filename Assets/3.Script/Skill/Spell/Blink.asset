@@ -28,7 +28,7 @@ MonoBehaviour:
   durationTime:
   - 0
   range:
-  - 10
+  - 999
   area:
   - 0
   ccType: 0
@@ -36,3 +36,4 @@ MonoBehaviour:
   afxs:
   - {fileID: 8300000, guid: d83a5560344a83c439b8be8e69d5b7c4, type: 3}
   flashEffect: {fileID: 2729919214645482622, guid: 438fc78bc53f4434e98a1227b7341aa7, type: 3}
+  flashRange: 10

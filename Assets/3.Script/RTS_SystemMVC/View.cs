@@ -63,11 +63,13 @@ public class View : MonoBehaviour
     }
     public void BtnInitMyUnit()
     {
-        if(targetUnit != null) { 
-        myUnit = targetUnit;
-        myUnit.myUnit = true;
-        InitMyUnit(myUnit);
-        targetUnit = null;
+        if (targetUnit != null)
+        {
+            if(myUnit != null) myUnit.myUnit = false;
+            myUnit = targetUnit;
+            myUnit.myUnit = true;
+            InitMyUnit(myUnit);
+            targetUnit = null;
         }
     }
     public void InitMyUnit(Unit unit)

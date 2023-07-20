@@ -293,12 +293,10 @@ public class DieState : IState
 public enum StateInSkill { None, Activated, Executed, Exited }
 public class SkillState : IState
 {
-    #region º¯¼öµé
     Skill skill;
     Unit myUnit;
     Unit t_unit;
     Vector3 t_pos;
-    #endregion
     StateInSkill state = StateInSkill.None;
     float activateTime;
     float durationTime;
@@ -339,11 +337,11 @@ public class SkillState : IState
     }
     public void Enter()
     {
-        state = StateInSkill.Exited;
+        state = StateInSkill.None;
     }
     public void Exit()
     {
-        state = StateInSkill.Exited;
+        state = StateInSkill.None;
         skill = null;
         t_unit = null;        
     }
@@ -361,16 +359,7 @@ public class SkillState : IState
         {
             switch (state)
             {
-                case StateInSkill.Exited:                    
-                    if (isInRange())
-                    {
-                        state = StateInSkill.None;
-                        ActivateSkill();
-                        return;
-                    }
-                    myUnit.MoveTo(t_pos);
-                    break;
-                case StateInSkill.None: break;
+                case StateInSkill.None: ActivateSkill(); break;
                 case StateInSkill.Activated:
                     if (activateTime > 0)
                     {
@@ -397,20 +386,7 @@ public class SkillState : IState
             }
         }
     }
-    bool isInRange()
-    {
-        switch (skill.inputType)
-        {
-            case InputType.Instant: return true;
-            case InputType.Target:
-                float distance = Vector3.Distance(myUnit.transform.position, t_unit.transform.position);
-                return distance <= myUnit.range;
-            case InputType.NonTarget:
-                float distance2 = Vector3.Distance(myUnit.transform.position, t_pos);
-                return distance2 <= myUnit.range;
-            default: return false;
-        }
-    }
+    
     void Rotate()
     {
         Quaternion targetRotation = Quaternion.LookRotation(t_pos - myUnit.transform.position);
@@ -486,3 +462,89 @@ public class PerformState : IState
     }
 }
 //todo
+public class SkillMoveState : IState
+{
+    Unit myUnit;
+    Skill skill;
+    Unit t_unit;
+    Vector3 t_pos;
+    int index;
+    bool isInRange()
+    {
+        switch (skill.inputType)
+        {
+            case InputType.Instant: return true;
+            case InputType.Target:
+                float distance = Vector3.Distance(myUnit.transform.position, t_unit.transform.position);
+                return distance <= skill.range[skill.level - 1];
+            case InputType.NonTarget:
+                float distance2 = Vector3.Distance(myUnit.transform.position, t_pos);
+                return distance2 <= skill.range[skill.level - 1];
+            default: return false;
+        }
+    }
+    public SkillMoveState(Unit unit)
+    {
+        myUnit = unit;
+        t_unit = null;
+        t_pos = myUnit.transform.position;
+    }
+    public void Init(Skill skill, int index)
+    {
+        this.skill = skill;
+        this.t_unit = null;
+        this.t_pos = myUnit.transform.position;
+        this.index = index;
+    }
+    public void Init(Skill skill, int index, Unit t_unit)
+    {
+        this.skill = skill;
+        this.t_unit = t_unit;
+        this.t_pos = t_unit.transform.position;
+        this.index = index;
+    }
+    public void Init(Skill skill, int index, Vector3 t_pos)
+    {
+        this.skill = skill;
+        this.t_unit = null;
+        this.t_pos = t_pos;
+        this.index = index;
+    }
+    public void Enter()
+    {
+    }
+
+    public void Exit()
+    {
+    }
+
+    public void FixedUpdate()
+    {
+    }
+
+    public void LateUpdate()
+    {
+    }
+
+    public void Update()
+    {
+        if (skill != null)
+        {
+            if (!isInRange())
+            {
+                myUnit.MoveTo(t_pos);
+            }
+            else if (isInRange()) { myUnit.Stop(); ExecuteSkill(); }
+        }
+    }
+
+    void ExecuteSkill()
+    {
+        switch (skill.inputType)
+        {
+            case InputType.Instant: myUnit.state_skill.Init(skill, index); myUnit.SetState(myUnit.state_skill); break;
+            case InputType.Target: myUnit.state_skill.Init(skill, index, t_unit); myUnit.SetState(myUnit.state_skill); break;
+            case InputType.NonTarget: myUnit.state_skill.Init(skill, index, t_pos); myUnit.SetState(myUnit.state_skill); break;
+        }
+    }
+}

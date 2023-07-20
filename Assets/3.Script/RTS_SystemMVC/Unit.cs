@@ -11,7 +11,7 @@ public class Unit : MonoBehaviour
     public int team = 0; // 0 = blue, 1 = red, 2 = neutral;
     [Header("자동세팅 컴포넌트")]
     [SerializeField] GameObject marker;
-    [SerializeField] NavMeshAgent navAgent;
+    public NavMeshAgent navAgent;
     [SerializeField] public Animator anim;
     [Header("데이터 받기")]
     [SerializeField] Champion unitData;
@@ -52,6 +52,7 @@ public class Unit : MonoBehaviour
     public DieState state_die;
     public SkillState state_skill;
     public PerformState state_perform;
+    public SkillMoveState state_skillmove;
     [Header("SkillSet")]
     public Skill skillQ;
     public Skill skillW;
@@ -72,6 +73,7 @@ public class Unit : MonoBehaviour
         state_die = new DieState(this);
         state_skill = new SkillState(this);
         state_perform = new PerformState(this);
+        state_skillmove = new SkillMoveState(this);
         cur_state = state_idle;
     }
     #region Unity CallBack Method
@@ -128,6 +130,30 @@ public class Unit : MonoBehaviour
     public void MoveTo(Vector3 t_pos)
     {
         navAgent.SetDestination(t_pos);
+    }
+
+    public void Rush(Unit t_unit, float time)
+    {
+        IEnumerator a = c();
+        StartCoroutine(a);
+        IEnumerator c()
+        {
+            Debug.Log("코루틴시작");
+            Vector3 sPos = transform.position;
+            Vector3 dir;
+            dir = transform.position - t_unit.transform.position;
+            dir = dir.normalized * 1.5f;
+            float curTime = 0;
+            while (curTime < time)
+            {
+                curTime += Time.deltaTime;
+                
+                navAgent.nextPosition = Vector3.Lerp(sPos, t_unit.transform.position + dir, curTime / time);
+                navAgent.SetDestination(t_unit.transform.position + dir);
+                yield return null;
+            }
+            Debug.Log("끝");
+        }
     }
     public void Blink(Vector3 t_pos)
     {
